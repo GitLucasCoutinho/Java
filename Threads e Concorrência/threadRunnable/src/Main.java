@@ -2,11 +2,13 @@
  * Contexto do programa:
  * Este programa demonstra como criar e executar uma thread em Java utilizando a interface Runnable.
  *
+ *
  * - A classe `MinhaTarefa` (não mostrada aqui, mas implementa Runnable) define o que a thread irá executar.
  * - No método main, criamos uma instância de Thread passando a tarefa.
  * - Chamamos `start()` para iniciar a execução da thread em paralelo.
  * - Enquanto isso, o método main continua rodando seu próprio laço, mostrando a concorrência.
  *
+ * 
  * Em resumo: este exemplo mostra como duas partes do código podem ser executadas simultaneamente,
  * evidenciando o conceito de multithreading em Java.
  */
