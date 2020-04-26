@@ -42,7 +42,7 @@ public class DownloadRealThread extends Thread {
         } catch (IOException e) {
             System.out.println("Erro ao realizar download: " + e.getMessage());
         }
-        
+
     }
 
     }
