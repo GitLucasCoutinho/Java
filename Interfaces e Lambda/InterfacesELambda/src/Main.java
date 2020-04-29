@@ -21,7 +21,9 @@ public class Main {
                 System.out.println("Música parada.");
             }
         };
+        musicPlayer.playMusic();
+        System.out.println("music player -> "+ musicPlayer.getClass());
 
-
+        System.out.println("music player -> "+ musicPlayer.getClass());
     }
 }
