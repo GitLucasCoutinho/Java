@@ -85,28 +85,29 @@ public class Main {           // Declaração da classe principal chamada "Main"
         //CopyOnWriteArrayList → lista dinâmica moderna
         // Cria uma lista segura para múltiplas threads (CopyOnWriteArrayList).
         // Cada vez que alguém modifica a lista, uma cópia interna é feita.
-        CopyOnWriteArrayList<String> lista = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<String> lista2 = new CopyOnWriteArrayList<>();
 
-        lista.add("Lucas");   // Adiciona um elemento.
-        lista.add("Ocooldev"); // Adiciona outro elemento.
+        lista2.add("Lucas");   // Adiciona um elemento.
+        lista2.add("Ocooldev"); // Adiciona outro elemento.
 
         // Percorre e imprime os elementos da lista.
-        lista.forEach(System.out::println);
+        lista2.forEach(System.out::println);
 
 
 
         //Collections.synchronizedList
         // Cria uma lista ArrayList normal, mas envolvida por Collections.synchronizedList.
         // Isso garante que todos os métodos sejam sincronizados (thread-safe).
-        List<String> lista = Collections.synchronizedList(new ArrayList<>());
+        List<String> lista3 = Collections.synchronizedList(new ArrayList<>());
 
-        lista.add("Lucas");   // Adiciona um elemento.
-        lista.add("Ocooldev"); // Adiciona outro elemento.
+        lista3.add("Lucas");   // Adiciona um elemento.
+        lista3.add("Ocooldev"); // Adiciona outro elemento.
 
         // Para percorrer com segurança em múltiplas threads, usamos synchronized no bloco.
-        synchronized (lista) {
-            lista.forEach(System.out::println);
+        synchronized (lista3) {
+            lista3.forEach(System.out::println);
 
 
         }
+    }
 }
