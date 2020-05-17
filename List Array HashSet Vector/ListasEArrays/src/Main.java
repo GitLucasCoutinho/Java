@@ -5,6 +5,7 @@ import java.util.List;        // Importa a interface List, que define o comporta
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+
 public class Main {           // Declaração da classe principal chamada "Main".
     public static void main(String[] args) {   // Método principal: ponto de entrada do programa.
 
