@@ -73,6 +73,14 @@ public class Main {
 
             System.out.println("Lista de produtos:" + nomesConcatenados);
 
+            /*
+            * 📌 Resumo didático
+                    - map(Produto::getPreco) → transforma cada Produto em seu preço (double).
+                    - reduce(0.0, (a, b) -> a + b) → soma todos os preços.
+                    - reduce(p1, (p1, p2) -> ...) → compara produtos e retorna o mais caro.
+                    - reduce("", (a, b) -> a + " " + b) → concatena nomes em uma única string.
+
+            * */
 
     }
 }
