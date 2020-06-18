@@ -7,6 +7,15 @@ Projeto didático em Java que demonstra:
 - Exceção genérica (`BancoException`) que recebe o tipo de erro e mensagem
 
 ---
+Resumo didático
+- Enum TipoErro → define os tipos de erro possíveis.
+- Exceção genérica BancoException → recebe um tipo de erro e uma mensagem.
+- ContaBancaria → lança sempre BancoException, mas com diferentes tipos (SALDO_INSUFICIENTE, VALOR_INVALIDO, CONTA_NAO_ENCONTRADA).
+- Main → trata todas as exceções em um único catch, diferenciando pelo tipo de erro.
+
+
+
+---
 
 ## 🛠️ Funcionalidades
 - Criar contas bancárias com titular e saldo inicial
