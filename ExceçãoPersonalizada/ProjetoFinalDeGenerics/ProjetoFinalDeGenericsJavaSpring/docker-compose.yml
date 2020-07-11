@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  banco-app:
+    build: .
+    container_name: banco-generics
+    ports:
+      - "8080:8080"
