@@ -1,10 +1,9 @@
 package com.banco;
 
-import com.banco.controller.BancoController;
+import com.banco.controller.*;
 import com.banco.model.Cliente;
 import com.banco.model.ContaCorrente;
 import com.banco.model.ContaPoupanca;
-import com.banco.service.BancoService;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

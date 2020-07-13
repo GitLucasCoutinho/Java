@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="63fc2f16-ce88-427b-9248-95a720acd33c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/BancoApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/controller/BancoController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/model/Cliente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/model/Conta.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/model/ContaBancaria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/model/ContaCorrente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/model/ContaPoupanca.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/repository/ClienteRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/repository/ContaRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/service/BancoService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/java/com/banco/service/RelatorioService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/BancoControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/BancoServiceMockitoTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/BancoServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/ClienteTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/ContaTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/RelatorioServiceExtraTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ProjetoFinalDeGenericsJavaSpring/src/test/java/com/banco/RelatorioServiceTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="38sMsvHFzuQWTgloCCmXHWacQ6I" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ToDo&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/windev/Documents/GitHub/Ruby/Java/ExceçãoPersonalizada/ProjetoFinalDeGenerics/banco-generics&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propCompiler&quot;
+  }
+}</component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="63fc2f16-ce88-427b-9248-95a720acd33c" name="Changes" comment="" />
+      <created>1769584034284</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1769584034284</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
