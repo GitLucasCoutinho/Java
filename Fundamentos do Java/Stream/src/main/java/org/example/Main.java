@@ -1,11 +1,22 @@
 package org.example;
 import java.util.stream.Collectors;
 import java.util.List;
+import java.util.stream.Stream;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
+
+                var value = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 7, 8, 7)
+                        .map(Object::toString)
+                        .toList();
+
+                System.out.println(value);
+
+
+
+
         List<Integer> values1 = List.of(3, 6, 9, 12);
         List<Integer> values2 = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
