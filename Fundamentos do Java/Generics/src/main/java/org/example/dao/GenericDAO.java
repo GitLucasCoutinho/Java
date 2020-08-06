@@ -1,5 +1,7 @@
 package org.example.dao;
 
+import org.example.domain.GenericDomain;
+
 import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +58,9 @@ public abstract class GenericDAO<T> {
         return db;
     }
 
-
+    public int count() {
+        // Retorna o número de objetos na lista (simulando contagem de registros).
+        return db.size();
+    }
 
 }
