@@ -1,59 +1,131 @@
 package org.example;
-// Define o pacote onde a classe está. Pacotes ajudam a organizar o código em módulos.
-// Pacotes evitam conflitos de nomes e facilitam a organização do projeto.
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-// Importa classes da biblioteca padrão do Java.
-// ArrayList: lista dinâmica que cresce conforme adicionamos elementos.
-// List: interface que define o comportamento genérico de listas (contrato).
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-    // Cria uma lista estática que será compartilhada por todas as threads.
-    // "static" significa que pertence à classe, não a um objeto específico.
-    private static List<Integer> numbers = new ArrayList<>();
+    // Exemplo 1: Lista sincronizada
+    // Usamos Collections.synchronizedList para proteger o acesso à lista.
+    // Isso garante que múltiplas threads possam adicionar elementos sem causar problemas.
+    private static List<Integer> syncList = Collections.synchronizedList(new ArrayList<>());
 
-        private synchronized static void inc(int number) {
-                numbers.add(number); // Adiciona o número à lista compartilhada.
-        }
-        private synchronized static void show() {
-                System.out.println(numbers); // Adiciona o número à lista compartilhada.
+    // Exemplo 2: Fila thread-safe
+    // ConcurrentLinkedQueue já é segura para uso em ambientes multithread.
+    // Não precisamos sincronizar manualmente.
+    private static Queue<Integer> queue = new ConcurrentLinkedQueue<>();
 
-        }
+    // Exemplo 3: Contador atômico
+    // AtomicInteger permite operações atômicas (seguras em concorrência) sobre inteiros.
+    private static AtomicInteger atomicCounter = new AtomicInteger(0);
 
-    public static void main(String[] args) {
-
-        // Método principal: ponto de entrada do programa.
-
-        // Runnable é uma interface funcional (tem apenas um método: run()).
-        // Usamos uma expressão lambda para definir o que cada thread vai executar.
-
-        Runnable inc = () -> {
-            // Essa tarefa adiciona números de 0 até 99.999 na lista.
+    public static void main(String[] args) throws InterruptedException {
+        // -------------------------------
+        // Exemplo 1: Lista sincronizada
+        // -------------------------------
+        // Thread que adiciona números positivos de 0 até 99.999
+        Runnable listIncTask = () -> {
             for (int i = 0; i < 100_000; i++) {
-                inc(i); // Adiciona cada número na lista.
+                syncList.add(i);
             }
         };
 
-        Runnable dec = () -> {
-            // Essa tarefa adiciona números negativos até -99.999.
+        // Thread que adiciona números negativos de 0 até -99.999
+        Runnable listDecTask = () -> {
             for (int i = 0; i > -100_000; i--) {
-                inc(i); // Adiciona cada número negativo na lista.
+                syncList.add(i);
             }
         };
 
-        Runnable show = () -> {
-            // Essa tarefa tenta imprimir os primeiros 100.000 elementos da lista.
-            // Atenção: se a lista não tiver esse tamanho ainda, pode ocorrer erro (IndexOutOfBoundsException).
+        // Criamos duas threads para adicionar números
+        Thread listT1 = new Thread(listIncTask);
+        Thread listT2 = new Thread(listDecTask);
+
+        // Iniciamos as threads
+        listT1.start();
+        listT2.start();
+
+        // join() faz a thread principal esperar até que listT1 e listT2 terminem
+        listT1.join();
+        listT2.join();
+
+        // Iterar sobre uma lista sincronizada exige "synchronized" para evitar problemas
+        synchronized (syncList) {
+            System.out.println("=== Lista sincronizada ===");
+            System.out.println("Tamanho da lista: " + syncList.size());
+            int count = 0;
+            for (Integer num : syncList) {
+                System.out.println(num);
+                if (++count >= 50) break; // imprime só os primeiros 50
+            }
+        }
+
+        // -------------------------------
+        // Exemplo 2: Fila thread-safe
+        // -------------------------------
+        // Thread que adiciona números positivos
+        Runnable queueIncTask = () -> {
             for (int i = 0; i < 100_000; i++) {
-                show(); // Imprime a lista atual.
+                queue.add(i);
             }
         };
 
-        // Aqui criamos e iniciamos três threads diferentes.
-        // Cada uma executa uma das tarefas definidas acima.
-        new Thread(inc).start();   // Thread que adiciona números positivos.
-        new Thread(dec).start();   // Thread que adiciona números negativos.
-        new Thread(show).start();  // Thread que imprime os números.
+        // Thread que adiciona números negativos
+        Runnable queueDecTask = () -> {
+            for (int i = 0; i > -100_000; i--) {
+                queue.add(i);
+            }
+        };
+
+        Thread queueT1 = new Thread(queueIncTask);
+        Thread queueT2 = new Thread(queueDecTask);
+
+        queueT1.start();
+        queueT2.start();
+
+        queueT1.join();
+        queueT2.join();
+
+        // Como a fila já é thread-safe, não precisamos sincronizar para iterar
+        System.out.println("\n=== Fila thread-safe ===");
+        System.out.println("Tamanho da fila: " + queue.size());
+        int countQ = 0;
+        for (Integer num : queue) {
+            System.out.println(num);
+            if (++countQ >= 50) break;
+        }
+
+        // -------------------------------
+        // Exemplo 3: Contador atômico
+        // -------------------------------
+        // Thread que incrementa o contador até +100.000
+        Runnable atomicIncTask = () -> {
+            for (int i = 0; i < 100_000; i++) {
+                atomicCounter.incrementAndGet(); // incremento atômico
+            }
+        };
+
+        // Thread que decrementa o contador até -100.000
+        Runnable atomicDecTask = () -> {
+            for (int i = 0; i < 100_000; i++) {
+                atomicCounter.decrementAndGet(); // decremento atômico
+            }
+        };
+
+        Thread atomicT1 = new Thread(atomicIncTask);
+        Thread atomicT2 = new Thread(atomicDecTask);
+
+        atomicT1.start();
+        atomicT2.start();
+
+        atomicT1.join();
+        atomicT2.join();
+
+        // O resultado esperado é 0, pois incrementos e decrementos se anulam
+        System.out.println("\n=== Contador atômico ===");
+        System.out.println("Valor final do contador: " + atomicCounter.get());
     }
 }
