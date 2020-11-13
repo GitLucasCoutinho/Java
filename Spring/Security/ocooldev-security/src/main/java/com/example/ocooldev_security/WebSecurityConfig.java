@@ -1,6 +1,5 @@
 package com.example.ocooldev_security;
 
-// Define o pacote onde a classe está localizada. Isso organiza o código dentro do projeto.
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
