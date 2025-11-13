@@ -37,18 +37,19 @@ export default function CalendarPage() {
   const { data: tasks } = useCollection<Task>(tasksCollection);
 
   const getTasksForDay = (day: Date, allTasks: Task[]) => {
+    if (!allTasks) return [];
     return allTasks.filter(task => {
       // Verifica tarefas com data de início
       if (task.startDate) {
-        const taskDate = task.startDate instanceof Timestamp ? task.startDate.toDate() : new Date(task.startDate);
-        if (isSameDay(taskDate, day)) {
+        const taskStartDate = task.startDate instanceof Timestamp ? task.startDate.toDate() : new Date(task.startDate);
+        if (isSameDay(taskStartDate, day)) {
           return true;
         }
       }
       // Verifica tarefas recorrentes
       if (task.recurringDays && task.recurringDays.length > 0) {
-        const dayOfWeek = getDay(day);
-        return task.recurringDays.some(recurringDay => dayMap[recurringDay] === dayOfWeek);
+        const dayOfWeek = getDay(day); // 0 for Sunday, 1 for Monday, etc.
+        return task.recurringDays.some(recurringDay => dayMap[recurringDay as keyof typeof dayMap] === dayOfWeek);
       }
       return false;
     });
@@ -118,8 +119,8 @@ export default function CalendarPage() {
   };
 
   const DayContent = ({ date }: { date: Date }) => {
-    const isPending = pendingDays.some(day => isSameDay(day, date));
-    const isCompleted = completedDays.some(day => isSameDay(day, date));
+    const isPending = pendingDays.some(d => isSameDay(d, date));
+    const isCompleted = completedDays.some(d => isSameDay(d, date));
     
     let dotColor = '';
     if (isPending) dotColor = 'bg-orange-500';
@@ -146,14 +147,6 @@ export default function CalendarPage() {
             onMonthChange={setCurrentMonth}
             className="rounded-md border"
             locale={ptBR}
-            modifiers={{
-                pending: pendingDays,
-                completed: completedDays,
-            }}
-            modifiersStyles={{
-                pending: { color: 'var(--orange)' },
-                completed: { color: 'var(--green)' },
-            }}
             components={{
               DayContent: (props) => <DayContent date={props.date} />
             }}
@@ -163,7 +156,7 @@ export default function CalendarPage() {
 
         <div className="w-full max-w-2xl">
             <h2 className="text-2xl font-semibold mb-4">
-                Tarefas para {selectedDate ? selectedDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' }) : 'o dia selecionado'}
+                Tarefas para {selectedDate ? format(selectedDate, "d 'de' MMMM", { locale: ptBR }) : 'o dia selecionado'}
             </h2>
             <TaskList
                 tasks={tasksForSelectedDay}
