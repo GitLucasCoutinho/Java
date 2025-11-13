@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -10,10 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Sparkles, Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { Task } from "@/types";
-import { getAiSuggestions } from "@/app/actions";
-import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
@@ -28,10 +25,6 @@ type AddTaskFormProps = {
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
 export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isSuggesting, setIsSuggesting] = useState(false);
-  const { toast } = useToast();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,29 +34,9 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
     },
   });
 
-  const watchedTitle = useWatch({ control: form.control, name: "title" });
-  const watchedCategory = useWatch({ control: form.control, name: "category" });
-
-  const handleGetSuggestions = async () => {
-    setIsSuggesting(true);
-    setSuggestions([]);
-    const result = await getAiSuggestions(watchedTitle, watchedCategory);
-    if (result.error) {
-      toast({
-        variant: "destructive",
-        title: "Erro na Sugestão",
-        description: result.error,
-      });
-    } else if (result.suggestions) {
-      setSuggestions(result.suggestions);
-    }
-    setIsSuggesting(false);
-  };
-
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAddTask({ title: values.title, description: values.description || "" });
     form.reset();
-    setSuggestions([]);
   }
 
   return (
@@ -120,41 +93,6 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
                 />
               </div>
             </div>
-            
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleGetSuggestions}
-              disabled={isSuggesting || !watchedTitle}
-            >
-              {isSuggesting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
-              Sugerir Títulos Inteligentes
-            </Button>
-            
-            {suggestions.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {suggestions.map((suggestion, index) => (
-                  <Button
-                    key={index}
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="bg-accent/50 hover:bg-accent"
-                    onClick={() => {
-                      form.setValue("title", suggestion);
-                      setSuggestions([]);
-                    }}
-                  >
-                    {suggestion}
-                  </Button>
-                ))}
-              </div>
-            )}
             
             <FormField
               control={form.control}
