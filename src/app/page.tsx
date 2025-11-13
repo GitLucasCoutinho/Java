@@ -107,7 +107,7 @@ export default function Home() {
         ) : (
           <>
             <section>
-              <h2 className="font-headline text-3xl font-semibold mb-6">Tarefas de Hoje</h2>
+              <h2 className="font-headline text-3xl font-semibold mb-6 text-primary">Tarefas de Hoje</h2>
               {isLoadingTasks ? (
                 <div className="space-y-3">
                   <Skeleton className="h-16 w-full" />
