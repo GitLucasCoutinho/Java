@@ -19,6 +19,14 @@ import { Calendar, Plus, ListTodo } from "lucide-react";
 import { TaskSquareIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 
 /**
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
@@ -26,6 +34,7 @@ import { Button } from "@/components/ui/button";
 export default function Home() {
   const { firestore, user } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isAddTaskSheetOpen, setAddTaskSheetOpen] = useState(false);
 
   // Memoiza a referência da coleção de tarefas do usuário no Firestore.
   const tasksCollection = useMemoFirebase(() => {
@@ -51,6 +60,7 @@ export default function Home() {
       category: taskData.category || "Pessoal", // Categoria padrão
     };
     addDoc(tasksCollection, newTask);
+    setAddTaskSheetOpen(false);
   };
 
   /**
@@ -99,6 +109,11 @@ export default function Home() {
     return tasks.filter(task => !task.isCompleted);
   }, [tasks]);
 
+  const completedTasks = useMemo(() => {
+    if (!tasks) return [];
+    return tasks.filter(task => task.isCompleted);
+  }, [tasks]);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
@@ -121,43 +136,72 @@ export default function Home() {
             <UserAuth />
           </div>
         ) : (
-          <section>
-            <h2 className="font-headline text-3xl font-semibold mb-6">Tarefas de Hoje</h2>
-            {isLoadingTasks ? (
-              <div className="space-y-3">
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-                <Skeleton className="h-16 w-full" />
-              </div>
-            ) : (
-              <TaskList
-                tasks={pendingTasks}
-                onToggleComplete={handleToggleComplete}
-                onDelete={handleDeleteTask}
-                onEdit={setEditingTask}
-              />
+          <>
+            <section>
+              <h2 className="font-headline text-3xl font-semibold mb-6">Tarefas de Hoje</h2>
+              {isLoadingTasks ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
+              ) : (
+                <TaskList
+                  tasks={pendingTasks}
+                  onToggleComplete={handleToggleComplete}
+                  onDelete={handleDeleteTask}
+                  onEdit={setEditingTask}
+                />
+              )}
+            </section>
+
+            {completedTasks.length > 0 && (
+                 <section className="space-y-6">
+                    <div className="flex items-center gap-4">
+                        <Separator className="flex-1" />
+                        <h2 className="font-headline text-2xl font-semibold text-muted-foreground">Concluídas</h2>
+                        <Separator className="flex-1" />
+                    </div>
+                    <TaskList
+                        tasks={completedTasks}
+                        onToggleComplete={handleToggleComplete}
+                        onDelete={handleDeleteTask}
+                        onEdit={setEditingTask}
+                        isCompletedList
+                    />
+                </section>
             )}
-          </section>
+          </>
         )}
       </main>
 
       {user && (
+        <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
          <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
             <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                     <Calendar className="h-6 w-6" />
                     <span className="sr-only">Calendário</span>
                 </Button>
-                <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
-                    <Plus className="h-8 w-8" />
-                    <span className="sr-only">Adicionar Tarefa</span>
-                </Button>
+                <SheetTrigger asChild>
+                    <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
+                        <Plus className="h-8 w-8" />
+                        <span className="sr-only">Adicionar Tarefa</span>
+                    </Button>
+                </SheetTrigger>
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                     <ListTodo className="h-6 w-6" />
                     <span className="sr-only">Tarefas Pendentes</span>
                 </Button>
             </nav>
         </footer>
+        <SheetContent side="bottom" className="rounded-t-lg max-h-[90vh] overflow-y-auto">
+            <SheetHeader className="text-left mb-6">
+                <SheetTitle>Adicionar Nova Tarefa</SheetTitle>
+            </SheetHeader>
+            <AddTaskForm onAddTask={handleAddTask} onDone={() => setAddTaskSheetOpen(false)} />
+        </SheetContent>
+        </Sheet>
       )}
 
       <EditTaskDialog
