@@ -126,6 +126,23 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
             />
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descrição (Opcional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Adicione mais detalhes sobre a tarefa..."
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="recurringDays"
               render={({ field }) => (
                 <FormItem>
@@ -218,23 +235,6 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
                 )}
                 />
             </div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição (Opcional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Adicione mais detalhes sobre a tarefa..."
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
         </div>
         <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar Tarefa</Button>
       </form>

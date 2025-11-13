@@ -139,6 +139,19 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descrição</FormLabel>
+                  <FormControl>
+                    <Textarea className="resize-none" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
              <FormField
               control={form.control}
               name="recurringDays"
@@ -233,19 +246,6 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
                 )}
                 />
             </div>
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição</FormLabel>
-                  <FormControl>
-                    <Textarea className="resize-none" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
