@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { Task } from "@/types";
 import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
@@ -17,7 +17,8 @@ import {
 import { useMemoFirebase } from "@/firebase/provider";
 import {
   initiateAnonymousSignIn,
-  initiateGoogleSignIn,
+  initiateGoogleSignInRedirect,
+  handleRedirectResult,
 } from "@/firebase/non-blocking-login";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "@/components/icons";
@@ -27,6 +28,12 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 export default function Home() {
   const { auth, firestore, user, isUserLoading } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+
+  useEffect(() => {
+    if (auth && !isUserLoading && !user) {
+      handleRedirectResult(auth);
+    }
+  }, [auth, isUserLoading, user]);
 
   const tasksCollection = useMemoFirebase(() => {
     if (!user) return null;
@@ -115,7 +122,7 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
             variant="outline"
-            onClick={() => initiateGoogleSignIn(auth)}
+            onClick={() => initiateGoogleSignInRedirect(auth)}
           >
             <GoogleIcon className="mr-2 h-4 w-4" />
             Entrar com Google

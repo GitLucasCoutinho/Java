@@ -5,7 +5,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   // Assume getAuth and app are initialized elsewhere
 } from 'firebase/auth';
 
@@ -16,13 +17,25 @@ export function initiateAnonymousSignIn(authInstance: Auth): void {
   // Code continues immediately. Auth state change is handled by onAuthStateChanged listener.
 }
 
-/** Initiate Google sign-in (non-blocking). */
-export function initiateGoogleSignIn(authInstance: Auth): void {
+/** Initiate Google sign-in via redirect. */
+export function initiateGoogleSignInRedirect(authInstance: Auth): void {
   const provider = new GoogleAuthProvider();
-  // CRITICAL: Call signInWithPopup directly. Do NOT use 'await signInWithPopup(...)'.
-  signInWithPopup(authInstance, provider);
-  // Code continues immediately. Auth state change is handled by onAuthStateChanged listener.
+  signInWithRedirect(authInstance, provider);
 }
+
+/** Handles the result from a redirect operation. Should be called on page load. */
+export function handleRedirectResult(authInstance: Auth): void {
+  getRedirectResult(authInstance)
+    .then((result) => {
+      // User is signed in. The onAuthStateChanged listener will handle the user object.
+      // You can get the Google Access Token from result.credential if needed.
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      console.error("Google sign-in redirect error:", error);
+    });
+}
+
 
 /** Initiate email/password sign-up (non-blocking). */
 export function initiateEmailSignUp(authInstance: Auth, email: string, password: string): void {
