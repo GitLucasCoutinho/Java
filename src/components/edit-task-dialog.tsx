@@ -28,7 +28,7 @@ import { DaySelector } from "./day-selector";
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
-  description: z.string().optional().nullable(),
+  description: z.string().optional(),
   recurringDays: z.array(z.string()).optional(),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
