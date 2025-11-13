@@ -40,7 +40,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
       updatedAt: serverTimestamp(),
       userId: user.uid,
       category: taskData.category || "Pessoal",
-      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : null,
+      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : Timestamp.fromDate(new Date()),
       endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : null,
       recurringDays: taskData.recurringDays || [],
     };
