@@ -8,7 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, Plus, ListTodo, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { AddTaskForm } from '@/components/add-task-form';
 import { UserAuth } from '@/components/user-auth';
 import { useFirebase } from '@/firebase';
@@ -53,8 +53,8 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
     if (isHomePage) {
       return (
         <>
-          <TaskSquareIcon className="w-8 h-8 text-primary" />
-          <h1 className="text-2xl font-bold tracking-tight text-primary">TaskFlow</h1>
+          <TaskSquareIcon className="w-8 h-8 text-blue-600" />
+          <h1 className="text-2xl font-bold tracking-tight text-blue-600">TaskFlow</h1>
         </>
       );
     }
@@ -65,7 +65,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
             <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
+        <h1 className="text-xl font-bold tracking-tight text-blue-600 flex items-center gap-2">
           {pageIcon}
           {pageTitle}
         </h1>
