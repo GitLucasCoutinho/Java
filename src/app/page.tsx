@@ -10,16 +10,14 @@ import type { Task } from "@/types";
 import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
-import { Separator } from "@/components/ui/separator";
 import { useFirebase } from "@/firebase";
 import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { getRedirectResult } from "firebase/auth";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
-import { SidebarProvider, Sidebar, SidebarInset, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { CheckSquare, Folder, Trash2 } from "lucide-react";
+import { SidebarProvider, Sidebar, SidebarInset, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar";
+import { CheckSquare, Folder } from "lucide-react";
 import { TaskSquareIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -173,7 +171,8 @@ export default function Home() {
                 </div>
             ) : (
                 <>
-                <header>
+                <header className="flex items-center gap-4">
+                    <SidebarTrigger className="md:hidden" />
                     <h2 className="font-headline text-3xl font-semibold">{selectedCategory}</h2>
                 </header>
 
