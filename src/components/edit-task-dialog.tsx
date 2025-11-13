@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Task } from "@/types";
 
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
+  category: z.string().min(1, "Por favor, selecione uma categoria."),
 });
 
 type EditTaskDialogProps = {
@@ -23,12 +25,15 @@ type EditTaskDialogProps = {
   onSave: (task: Task) => void;
 };
 
+const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
+
 export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
+      category: "Pessoal",
     },
   });
 
@@ -37,6 +42,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
       form.reset({
         title: task.title,
         description: task.description,
+        category: task.category,
       });
     }
   }, [task, form]);
@@ -47,6 +53,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
         ...task,
         title: values.title,
         description: values.description || "",
+        category: values.category,
       });
     }
   }
@@ -68,6 +75,30 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categoria</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {taskCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

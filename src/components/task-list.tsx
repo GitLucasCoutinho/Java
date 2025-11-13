@@ -20,7 +20,7 @@ export function TaskList({
 }: TaskListProps) {
   return (
     <section>
-      <h2 className="font-headline text-2xl font-semibold mb-4">{title}</h2>
+      <h3 className="font-headline text-2xl font-semibold mb-4 text-center">{title}</h3>
       {tasks.length > 0 ? (
         <div className="space-y-3">
           {tasks.map((task) => (
@@ -34,11 +34,11 @@ export function TaskList({
           ))}
         </div>
       ) : (
-        <div className="text-center text-muted-foreground py-8 px-4 border-2 border-dashed rounded-lg">
+        <div className="text-center text-muted-foreground h-full flex items-center justify-center py-8 px-4 border-2 border-dashed rounded-lg">
           <p>
             {title === "Concluídas"
               ? "Nenhuma tarefa concluída ainda."
-              : "Você está em dia!"}
+              : "Sem tarefas nesta categoria."}
           </p>
         </div>
       )}

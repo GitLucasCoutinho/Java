@@ -35,7 +35,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onAddTask({ title: values.title, description: values.description || "" });
+    onAddTask({ title: values.title, description: values.description || "", category: values.category });
     form.reset();
   }
 
