@@ -8,11 +8,11 @@ import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { Separator } from "@/components/ui/separator";
 import { useFirebase } from "@/firebase";
 import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { signInAnonymously, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
+import { getRedirectResult } from "firebase/auth";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
-import { Button } from "@/components/ui/button";
-import { GoogleIcon } from "@/components/icons";
+import { UserAuth } from "@/components/user-auth";
+
 
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
@@ -74,17 +74,6 @@ export default function Home() {
     setEditingTask(null);
   };
 
-  const handleGoogleSignIn = () => {
-    if (!auth) return;
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
-  };
-
-  const handleAnonymousSignIn = () => {
-    if (!auth) return;
-    signInAnonymously(auth);
-  };
-
   const { pendingTasksByCategory, completedTasks } = useMemo(() => {
     if (!tasks) {
       return { pendingTasksByCategory: {}, completedTasks: [] };
@@ -108,91 +97,77 @@ export default function Home() {
     );
   }, [tasks]);
 
-  if (isUserLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Carregando...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-3xl font-bold mb-4">Bem-vindo ao TaskFlow</h1>
-        <p className="mb-6">Faça login para gerenciar suas tarefas.</p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button
-            variant="outline"
-            onClick={handleGoogleSignIn}
-          >
-            <GoogleIcon className="mr-2 h-4 w-4" />
-            Entrar com Google
-          </Button>
-          <Button onClick={handleAnonymousSignIn}>
-            Entrar como Anônimo
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-
   return (
     <main className="container mx-auto p-4 md:p-8">
-      <header className="text-center mb-8">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-          TaskFlow
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Sua lista de tarefas inteligente, calma e focada
-        </p>
-      </header>
-
-      <div className="max-w-7xl mx-auto">
-        <AddTaskForm onAddTask={handleAddTask} />
-
-        <Separator className="my-8" />
-
-        <section>
-          <h2 className="font-headline text-3xl font-semibold mb-6">Pendentes</h2>
-          {isLoadingTasks ? (
-             <div className="text-center">Carregando tarefas...</div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-              {taskCategories.map((category) => (
-                <TaskList
-                  key={category}
-                  title={category}
-                  tasks={pendingTasksByCategory[category] || []}
-                  onToggleComplete={handleToggleComplete}
-                  onDelete={handleDeleteTask}
-                  onEdit={setEditingTask}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        <Separator className="my-8" />
-
-        <div className="space-y-8 max-w-3xl mx-auto">
-          <TaskList
-            title="Concluídas"
-            tasks={completedTasks}
-            onToggleComplete={handleToggleComplete}
-            onDelete={handleDeleteTask}
-            onEdit={setEditingTask}
-          />
+      <header className="flex justify-between items-center text-center mb-8">
+        <div className="flex-1">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
+            TaskFlow
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Sua lista de tarefas inteligente, calma e focada
+          </p>
         </div>
-      </div>
+        <UserAuth />
+      </header>
+      
+      {isUserLoading ? (
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <p>Carregando...</p>
+        </div>
+      ) : !user ? (
+        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
+          <h2 className="text-2xl font-bold mb-4">Bem-vindo ao TaskFlow</h2>
+          <p className="text-muted-foreground">Faça login para começar a gerenciar suas tarefas.</p>
+        </div>
+      ) : (
+        <>
+          <div className="max-w-7xl mx-auto">
+            <AddTaskForm onAddTask={handleAddTask} />
 
-      <EditTaskDialog
-        task={editingTask}
-        isOpen={!!editingTask}
-        onClose={() => setEditingTask(null)}
-        onSave={handleSaveTask}
-      />
+            <Separator className="my-8" />
+
+            <section>
+              <h2 className="font-headline text-3xl font-semibold mb-6">Pendentes</h2>
+              {isLoadingTasks ? (
+                 <div className="text-center">Carregando tarefas...</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                  {taskCategories.map((category) => (
+                    <TaskList
+                      key={category}
+                      title={category}
+                      tasks={pendingTasksByCategory[category] || []}
+                      onToggleComplete={handleToggleComplete}
+                      onDelete={handleDeleteTask}
+                      onEdit={setEditingTask}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <Separator className="my-8" />
+
+            <div className="space-y-8 max-w-3xl mx-auto">
+              <TaskList
+                title="Concluídas"
+                tasks={completedTasks}
+                onToggleComplete={handleToggleComplete}
+                onDelete={handleDeleteTask}
+                onEdit={setEditingTask}
+              />
+            </div>
+          </div>
+
+          <EditTaskDialog
+            task={editingTask}
+            isOpen={!!editingTask}
+            onClose={() => setEditingTask(null)}
+            onSave={handleSaveTask}
+          />
+        </>
+      )}
     </main>
   );
 }
