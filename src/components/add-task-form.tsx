@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import type { Task } from "@/types";
+import { useEffect } from "react";
 
 /**
  * Esquema de validação para o formulário de adicionar tarefa.
@@ -30,6 +31,7 @@ const formSchema = z.object({
  */
 type AddTaskFormProps = {
   onAddTask: (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => void;
+  defaultCategory: string;
 };
 
 // Categorias de tarefas fixas para o seletor.
@@ -39,15 +41,19 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
  * Um formulário encapsulado em um Card para adicionar novas tarefas à lista.
  * @param {AddTaskFormProps} props - Propriedades do componente.
  */
-export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
+export function AddTaskForm({ onAddTask, defaultCategory }: AddTaskFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
-      category: "Pessoal",
+      category: defaultCategory,
     },
   });
+
+  useEffect(() => {
+    form.setValue('category', defaultCategory);
+  }, [defaultCategory, form]);
 
   /**
    * Função chamada ao submeter o formulário.
@@ -55,7 +61,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
    */
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAddTask({ title: values.title, description: values.description || "", category: values.category });
-    form.reset();
+    form.reset({ title: "", description: "", category: values.category });
   }
 
   return (
@@ -92,7 +98,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Categoria</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Selecione uma categoria" />

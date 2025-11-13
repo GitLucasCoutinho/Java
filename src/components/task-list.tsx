@@ -11,11 +11,11 @@ import { TaskCard } from "./task-card";
  * Propriedades para o componente TaskList.
  */
 type TaskListProps = {
-  title: string;                       // Título da lista (ex: "Pessoal", "Concluídas").
   tasks: Task[];                       // Array de tarefas a serem exibidas.
   onToggleComplete: (id: string) => void; // Função para alternar o estado de conclusão.
   onDelete: (id:string) => void;       // Função para excluir uma tarefa.
   onEdit: (task: Task) => void;        // Função para editar uma tarefa.
+  isCompletedList?: boolean;
 };
 
 /**
@@ -23,15 +23,14 @@ type TaskListProps = {
  * @param {TaskListProps} props - As propriedades do componente.
  */
 export function TaskList({
-  title,
   tasks,
   onToggleComplete,
   onDelete,
   onEdit,
+  isCompletedList,
 }: TaskListProps) {
   return (
     <section>
-      <h3 className="font-headline text-2xl font-semibold mb-4 text-center">{title}</h3>
       {tasks.length > 0 ? (
         <div className="space-y-3">
           {/* Mapeia e renderiza cada tarefa usando o componente TaskCard */}
@@ -47,11 +46,11 @@ export function TaskList({
         </div>
       ) : (
         // Mensagem exibida quando não há tarefas na lista.
-        <div className="text-center text-muted-foreground h-full flex items-center justify-center py-8 px-4 border-2 border-dashed rounded-lg">
+        <div className="text-center text-muted-foreground h-full flex items-center justify-center py-16 px-4 border-2 border-dashed rounded-lg">
           <p>
-            {title === "Concluídas"
+            {isCompletedList
               ? "Nenhuma tarefa concluída ainda."
-              : "Sem tarefas nesta categoria."}
+              : "Sem tarefas aqui. Adicione uma nova!"}
           </p>
         </div>
       )}
