@@ -53,8 +53,8 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
     if (isHomePage) {
       return (
         <>
-          <TaskSquareIcon className="w-8 h-8 text-primary" />
-          <h1 className="text-2xl font-bold tracking-tight text-primary">TaskFlow</h1>
+          <TaskSquareIcon className="w-8 h-8 text-[#1200ff]" />
+          <h1 className="text-2xl font-bold tracking-tight text-[#1200ff]">TaskFlow</h1>
         </>
       );
     }
@@ -65,7 +65,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
             <ArrowLeft className="h-6 w-6" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
+        <h1 className="text-xl font-bold tracking-tight text-[#1200ff] flex items-center gap-2">
           {pageIcon}
           {pageTitle}
         </h1>
