@@ -95,7 +95,7 @@ export default function CategoriesPage() {
     <div className="flex flex-col min-h-screen bg-background">
        <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-2">
-            <Link href="/" legacyBehavior passHref>
+            <Link href="/">
                 <Button variant="ghost" size="icon" aria-label="Voltar para a página inicial">
                     <ArrowLeft className="h-6 w-6" />
                 </Button>

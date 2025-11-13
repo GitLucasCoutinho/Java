@@ -192,7 +192,7 @@ export default function Home() {
         <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
          <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
             <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
-              <Link href="/calendar" legacyBehavior passHref>
+              <Link href="/calendar">
                   <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                       <Calendar className="h-6 w-6" />
                       <span className="sr-only">Calendário</span>
@@ -204,7 +204,7 @@ export default function Home() {
                       <span className="sr-only">Adicionar Tarefa</span>
                   </Button>
               </SheetTrigger>
-              <Link href="/categories" legacyBehavior passHref>
+              <Link href="/categories">
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                     <ListTodo className="h-6 w-6" />
                     <span className="sr-only">Tarefas por Categoria</span>
