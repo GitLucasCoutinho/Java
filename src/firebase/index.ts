@@ -1,27 +1,30 @@
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
-import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore'
+import { initializeApp, getApp, FirebaseApp } from 'firebase/app';
+import { getAuth, Auth } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
-export function initializeFirebase() {
-  if (getApps().length) {
-    return getSdks(getApp());
-  }
+let firebaseApp: FirebaseApp;
+let auth: Auth;
+let firestore: Firestore;
 
-  // When deploying to a third-party host like Netlify, the automatic initialization
-  // from App Hosting won't be available. We'll explicitly use the firebaseConfig.
-  const firebaseApp = initializeApp(firebaseConfig);
-  return getSdks(firebaseApp);
+try {
+  firebaseApp = getApp();
+} catch (e) {
+  firebaseApp = initializeApp(firebaseConfig);
 }
 
-export function getSdks(firebaseApp: FirebaseApp) {
+auth = getAuth(firebaseApp);
+firestore = getFirestore(firebaseApp);
+
+
+export function initializeFirebase() {
   return {
     firebaseApp,
-    auth: getAuth(firebaseApp),
-    firestore: getFirestore(firebaseApp)
+    auth,
+    firestore,
   };
 }
 
