@@ -5,14 +5,13 @@
  */
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import type { Task } from "@/types";
 import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { useFirebase } from "@/firebase";
 import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { getRedirectResult } from "firebase/auth";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
@@ -29,16 +28,9 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
  */
 export default function Home() {
-  const { auth, firestore, user, isUserLoading } = useFirebase();
+  const { firestore, user } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("Pessoal");
-
-  // Efeito para lidar com o resultado do redirecionamento de login do Google.
-  useEffect(() => {
-    if (auth && !isUserLoading && !user) {
-      getRedirectResult(auth);
-    }
-  }, [auth, isUserLoading, user]);
 
   // Memoiza a referência da coleção de tarefas do usuário no Firestore.
   const tasksCollection = useMemoFirebase(() => {

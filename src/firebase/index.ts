@@ -31,7 +31,7 @@ export function initializeFirebase() {
 
   // Obtém as instâncias dos serviços de Autenticação e Firestore.
   auth = getAuth(firebaseApp);
-firestore = getFirestore(firebaseApp);
+  firestore = getFirestore(firebaseApp);
 
   return {
     firebaseApp,
