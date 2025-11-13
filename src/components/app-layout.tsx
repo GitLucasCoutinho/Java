@@ -8,7 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, Plus, ListTodo, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { AddTaskForm } from '@/components/add-task-form';
 import { UserAuth } from '@/components/user-auth';
 import { useFirebase } from '@/firebase';
