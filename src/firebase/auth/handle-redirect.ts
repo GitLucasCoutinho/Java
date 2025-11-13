@@ -6,7 +6,7 @@
  */
 'use client';
 
-import { getAuth, getRedirectResult, type UserCredential } from 'firebase/auth';
+import { getRedirectResult, type UserCredential } from 'firebase/auth';
 import { initializeFirebase } from '@/firebase';
 
 // Uma promessa que resolve com as credenciais do usuário ou nulo.
