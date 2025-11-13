@@ -3,6 +3,7 @@
  * Define o tema, plugins e outras configurações para o framework de CSS.
  */
 import type {Config} from 'tailwindcss';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export default {
   // Habilita o modo escuro baseado em uma classe no elemento HTML.
@@ -57,7 +58,20 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        green: 'hsl(var(--green))',
+        green: {
+          DEFAULT: 'hsl(var(--green))',
+          '50': '#ecfdf5',
+          '100': '#d1fae5',
+          '200': '#a7f3d0',
+          '300': '#6ee7b7',
+          '400': '#34d399',
+          '500': '#10b981',
+          '600': '#059669',
+          '700': '#047857',
+          '800': '#065f46',
+          '900': '#064e3b',
+          '950': '#022c22',
+        },
         orange: 'hsl(var(--orange))',
         chart: {
           '1': 'hsl(var(--chart-1))',
@@ -82,6 +96,9 @@ export default {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+       backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       // Define keyframes para animações personalizadas.
       keyframes: {

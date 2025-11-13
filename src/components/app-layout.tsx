@@ -60,7 +60,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
     }
     return (
       <>
-        <Link href="/">
+        <Link href="/" legacyBehavior={false}>
           <Button variant="ghost" size="icon" aria-label="Voltar para a página inicial">
             <ArrowLeft className="h-6 w-6" />
           </Button>
@@ -88,19 +88,19 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
         <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
           <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
             <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
-              <Link href="/calendar">
+              <Link href="/calendar" legacyBehavior={false}>
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                   <Calendar className="h-6 w-6" />
                   <span className="sr-only">Calendário</span>
                 </Button>
               </Link>
               <SheetTrigger asChild>
-                <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
+                <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4 bg-gradient-radial from-primary to-green-900 text-primary-foreground">
                   <Plus className="h-8 w-8" />
                   <span className="sr-only">Adicionar Tarefa</span>
                 </Button>
               </SheetTrigger>
-              <Link href="/categories">
+              <Link href="/categories" legacyBehavior={false}>
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                   <ListTodo className="h-6 w-6" />
                   <span className="sr-only">Tarefas por Categoria</span>
