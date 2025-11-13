@@ -1,0 +1,81 @@
+/**
+ * @fileoverview Firestore Security Rules for TaskFlow application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for tasks, meaning only the
+ * user who created a task can read, update, or delete it. Suggested task names
+ * are globally readable.
+ *
+ * Data Structure:
+ * - /users/{userId}/tasks/{taskId}: Stores tasks specific to a user. The {userId}
+ *   segment ensures that tasks are isolated to their respective owners.
+ * - /suggested_task_names/{suggestedTaskNameId}: Stores suggested task names
+ *   that are available to all users.
+ *
+ * Key Security Decisions:
+ * - Tasks are strictly owned by the user ID in the path.
+ * - Listing tasks is allowed only within a user's own /users/{userId}/tasks collection.
+ * - Suggested task names are publicly readable, but write access is not allowed
+ *   in this prototype.
+ *
+ * Denormalization for Authorization:
+ * Not applicable - Authorization is handled through the path structure.  Tasks
+ * inherit their owner from their location under `/users/{userId}`.
+ *
+ * Structural Segregation:
+ * Tasks are kept separate from suggested task names to enforce different access
+ * control policies.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to tasks owned by a specific user.
+     * @path /users/{userId}/tasks/{taskId}
+     * @allow (create) - User 'user_abc' can create a new task with ID 'task_123' under their own user ID.
+     * @allow (get) - User 'user_abc' can read task 'task_123' under their own user ID.
+     * @allow (update) - User 'user_abc' can update task 'task_123' under their own user ID.
+     * @allow (delete) - User 'user_abc' can delete task 'task_123' under their own user ID.
+     * @deny (create) - User 'user_xyz' cannot create a task under user 'user_abc''s ID.
+     * @deny (get) - User 'user_xyz' cannot read task 'task_123' under user 'user_abc''s ID.
+     * @deny (update) - User 'user_xyz' cannot update task 'task_123' under user 'user_abc''s ID.
+     * @deny (delete) - User 'user_xyz' cannot delete task 'task_123' under user 'user_abc''s ID.
+     * @principle Enforces document ownership for all operations.
+     */
+    match /users/{userId}/tasks/{taskId} {
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if isSignedIn() && isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
+    }
+
+    /**
+     * @description Controls access to suggested task names, which are publicly readable.
+     * @path /suggested_task_names/{suggestedTaskNameId}
+     * @allow (get) - Any user can read a suggested task name.
+     * @allow (list) - Any user can list suggested task names.
+     * @deny (create) - No user can create a suggested task name through the client.
+     * @deny (update) - No user can update a suggested task name through the client.
+     * @deny (delete) - No user can delete a suggested task name through the client.
+     */
+    match /suggested_task_names/{suggestedTaskNameId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+    }
+  }
+}

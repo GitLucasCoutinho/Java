@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "Task": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Task",
+      "type": "object",
+      "description": "Represents a task in the TaskFlow todo list application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Task entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the task."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the task."
+        },
+        "isCompleted": {
+          "type": "boolean",
+          "description": "Indicates whether the task is completed or not."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of when the task was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of when the task was last updated.",
+          "format": "date-time"
+        },
+        "suggestedTaskNameId": {
+          "type": "string",
+          "description": "Reference to SuggestedTaskName. (Relationship: SuggestedTaskName 1:N Task)"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "isCompleted",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "SuggestedTaskName": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "SuggestedTaskName",
+      "type": "object",
+      "description": "Represents AI powered task name suggestions based on user habits and task category.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the SuggestedTaskName entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The task name suggested by AI."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the suggested task."
+        },
+        "frequency": {
+          "type": "number",
+          "description": "Frequency of how often this suggestion is used."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category",
+        "frequency"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/tasks/{taskId}",
+        "definition": {
+          "entityName": "Task",
+          "schema": {
+            "$ref": "#/backend/entities/Task"
+          },
+          "description": "Stores tasks owned by a specific user. Uses path-based ownership for security. No denormalization required due to the selected ownership model.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The ID of the user who owns the task."
+            },
+            {
+              "name": "taskId",
+              "description": "The ID of the task."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/suggested_task_names/{suggestedTaskNameId}",
+        "definition": {
+          "entityName": "SuggestedTaskName",
+          "schema": {
+            "$ref": "#/backend/entities/SuggestedTaskName"
+          },
+          "description": "Stores globally available suggested task names.  Accessible to all users.",
+          "params": [
+            {
+              "name": "suggestedTaskNameId",
+              "description": "The ID of the suggested task name."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to follow best practices for security, scalability, and debuggability, prioritizing Authorization Independence.  Since tasks are owned by individual users, we use path-based ownership for the `tasks` collection. Suggested task names are global and accessible to all users, so they reside in a top-level collection. This design ensures clarity of ownership and avoids complex authorization rules. To ensure Authorization Independence (Strategy A), no denormalization is needed because of the selected ownership model. QAPs are supported because listing tasks under `/users/{userId}/tasks` is inherently secure due to path-based ownership."
+  }
+}
