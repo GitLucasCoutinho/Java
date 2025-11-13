@@ -15,8 +15,12 @@ import {
   deleteDocumentNonBlocking,
 } from "@/firebase/non-blocking-updates";
 import { useMemoFirebase } from "@/firebase/provider";
-import { initiateAnonymousSignIn } from "@/firebase/non-blocking-login";
+import {
+  initiateAnonymousSignIn,
+  initiateGoogleSignIn,
+} from "@/firebase/non-blocking-login";
 import { Button } from "@/components/ui/button";
+import { GoogleIcon } from "@/components/icons";
 
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
@@ -108,9 +112,18 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-3xl font-bold mb-4">Bem-vindo ao TaskFlow</h1>
         <p className="mb-6">Faça login para gerenciar suas tarefas.</p>
-        <Button onClick={() => initiateAnonymousSignIn(auth)}>
-          Entrar como Anônimo
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Button
+            variant="outline"
+            onClick={() => initiateGoogleSignIn(auth)}
+          >
+            <GoogleIcon className="mr-2 h-4 w-4" />
+            Entrar com Google
+          </Button>
+          <Button onClick={() => initiateAnonymousSignIn(auth)}>
+            Entrar como Anônimo
+          </Button>
+        </div>
       </div>
     );
   }
