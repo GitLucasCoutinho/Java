@@ -17,6 +17,7 @@ import { isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, getDay, format 
 import { ptBR } from 'date-fns/locale';
 import { Separator } from "@/components/ui/separator";
 import { AppLayout } from "@/components/app-layout";
+import { cn } from "@/lib/utils";
 
 // Mapeia string de dia para número (0=Dom, 1=Seg, ...)
 const dayMap: { [key: string]: number } = {
@@ -55,21 +56,27 @@ export default function CalendarPage() {
     });
   };
 
-  const taskDays = useMemo(() => {
-    if (!tasks) return [];
+  const { pendingTaskDays, completedTaskDays } = useMemo(() => {
+    if (!tasks) return { pendingTaskDays: [], completedTaskDays: [] };
   
-    const daysWithTasks: Date[] = [];
+    const pendingDays: Date[] = [];
+    const completedDays: Date[] = [];
     const interval = { start: startOfMonth(currentMonth), end: endOfMonth(currentMonth) };
     const daysInMonth = eachDayOfInterval(interval);
   
     daysInMonth.forEach(day => {
       const tasksForDay = getTasksForDay(day, tasks);
       if (tasksForDay.length > 0) {
-        daysWithTasks.push(day);
+        const hasPending = tasksForDay.some(t => !t.isCompleted);
+        if (hasPending) {
+          pendingDays.push(day);
+        } else {
+          completedDays.push(day);
+        }
       }
     });
   
-    return daysWithTasks;
+    return { pendingTaskDays: pendingDays, completedTaskDays: completedDays };
   }, [tasks, currentMonth]);
 
   const tasksForSelectedDay = useMemo(() => {
@@ -113,13 +120,17 @@ export default function CalendarPage() {
   };
 
   const DayContent = ({ date }: { date: Date }) => {
-    const hasTasks = taskDays.some(d => isSameDay(d, date));
+    const hasPendingTasks = pendingTaskDays.some(d => isSameDay(d, date));
+    const hasCompletedTasks = completedTaskDays.some(d => isSameDay(d, date));
 
     return (
       <div className="relative h-full w-full flex items-center justify-center">
         <span>{format(date, 'd')}</span>
-        {hasTasks && (
-          <div className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-green-900" />
+        {(hasPendingTasks || hasCompletedTasks) && (
+          <div className={cn(
+            "absolute bottom-1 h-1.5 w-1.5 rounded-full",
+            hasPendingTasks ? "bg-orange" : "bg-green-900"
+          )} />
         )}
       </div>
     );
