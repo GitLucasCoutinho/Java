@@ -1,7 +1,7 @@
 /**
  * @file Componente principal da página inicial.
  * Gerencia o estado das tarefas, a autenticação do usuário e a interação com o Firestore.
- * Renderiza a lista de tarefas e a nova barra de navegação inferior.
+ * Renderiza la lista de tarefas e a nova barra de navegação inferior.
  */
 "use client";
 
@@ -27,6 +27,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 /**
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
@@ -191,20 +192,24 @@ export default function Home() {
         <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
          <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
             <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
-                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
-                    <Calendar className="h-6 w-6" />
-                    <span className="sr-only">Calendário</span>
-                </Button>
-                <SheetTrigger asChild>
-                    <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
-                        <Plus className="h-8 w-8" />
-                        <span className="sr-only">Adicionar Tarefa</span>
-                    </Button>
-                </SheetTrigger>
+              <Link href="/calendar" legacyBehavior passHref>
+                  <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
+                      <Calendar className="h-6 w-6" />
+                      <span className="sr-only">Calendário</span>
+                  </Button>
+              </Link>
+              <SheetTrigger asChild>
+                  <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
+                      <Plus className="h-8 w-8" />
+                      <span className="sr-only">Adicionar Tarefa</span>
+                  </Button>
+              </SheetTrigger>
+              <Link href="/categories" legacyBehavior passHref>
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
                     <ListTodo className="h-6 w-6" />
-                    <span className="sr-only">Tarefas Pendentes</span>
+                    <span className="sr-only">Tarefas por Categoria</span>
                 </Button>
+              </Link>
             </nav>
         </footer>
         <SheetContent side="bottom" className="rounded-t-lg max-h-[90vh] overflow-y-auto">
