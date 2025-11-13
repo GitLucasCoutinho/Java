@@ -167,7 +167,8 @@ export default function Home() {
                     <TaskSquareIcon className="w-24 h-24 text-primary mb-4" />
                     <h2 className="text-2xl font-bold mb-4">Bem-vindo ao TaskFlow</h2>
                     <p className="text-muted-foreground">Sua lista de tarefas inteligente, calma e focada.</p>
-                    <p className="text-muted-foreground mt-2">Faça login pela barra lateral para começar.</p>
+                    <p className="text-muted-foreground mt-2 mb-4">Faça login para começar.</p>
+                    <UserAuth />
                 </div>
             ) : (
                 <>
