@@ -7,19 +7,9 @@ import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { Separator } from "@/components/ui/separator";
 import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc, signInAnonymously, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
-import {
-  addDocumentNonBlocking,
-  updateDocumentNonBlocking,
-  deleteDocumentNonBlocking,
-} from "@/firebase/non-blocking-updates";
 import { useMemoFirebase } from "@/firebase/provider";
-import {
-  initiateAnonymousSignIn,
-  initiateGoogleSignInRedirect,
-  handleRedirectResult,
-} from "@/firebase/non-blocking-login";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "@/components/icons";
 
@@ -31,7 +21,7 @@ export default function Home() {
 
   useEffect(() => {
     if (auth && !isUserLoading && !user) {
-      handleRedirectResult(auth);
+      getRedirectResult(auth);
     }
   }, [auth, isUserLoading, user]);
 
@@ -42,7 +32,7 @@ export default function Home() {
 
   const { data: tasks, isLoading: isLoadingTasks } = useCollection<Task>(tasksCollection);
 
-  const handleAddTask = (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => {
+  const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => {
     if (!tasksCollection || !user) return;
     const newTask = {
       ...taskData,
@@ -51,36 +41,47 @@ export default function Home() {
       updatedAt: serverTimestamp(),
       userId: user.uid,
     };
-    addDocumentNonBlocking(tasksCollection, newTask);
+    await addDoc(tasksCollection, newTask);
   };
 
-  const handleToggleComplete = (taskId: string) => {
+  const handleToggleComplete = async (taskId: string) => {
     if (!tasksCollection) return;
     const task = tasks?.find((t) => t.id === taskId);
     if (task) {
       const taskRef = doc(tasksCollection, taskId);
-      updateDocumentNonBlocking(taskRef, {
+      await updateDoc(taskRef, {
         isCompleted: !task.isCompleted,
         updatedAt: serverTimestamp(),
       });
     }
   };
 
-  const handleDeleteTask = (taskId: string) => {
+  const handleDeleteTask = async (taskId: string) => {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, taskId);
-    deleteDocumentNonBlocking(taskRef);
+    await deleteDoc(taskRef);
   };
 
-  const handleSaveTask = (updatedTask: Task) => {
+  const handleSaveTask = async (updatedTask: Task) => {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, updatedTask.id);
     const { id, ...taskToUpdate } = updatedTask;
-    updateDocumentNonBlocking(taskRef, {
+    await updateDoc(taskRef, {
       ...taskToUpdate,
       updatedAt: serverTimestamp(),
     });
     setEditingTask(null);
+  };
+
+  const handleGoogleSignIn = () => {
+    if (!auth) return;
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider);
+  };
+
+  const handleAnonymousSignIn = () => {
+    if (!auth) return;
+    signInAnonymously(auth);
   };
 
   const { pendingTasksByCategory, completedTasks } = useMemo(() => {
@@ -122,12 +123,12 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
             variant="outline"
-            onClick={() => initiateGoogleSignInRedirect(auth)}
+            onClick={handleGoogleSignIn}
           >
             <GoogleIcon className="mr-2 h-4 w-4" />
             Entrar com Google
           </Button>
-          <Button onClick={() => initiateAnonymousSignIn(auth)}>
+          <Button onClick={handleAnonymousSignIn}>
             Entrar como Anônimo
           </Button>
         </div>
