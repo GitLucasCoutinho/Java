@@ -67,7 +67,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
     if (task) {
       form.reset({
         title: task.title,
-        description: task.description,
+        description: task.description || "",
         category: task.category,
         recurringDays: task.recurringDays || [],
         startDate: task.startDate ? new Date(task.startDate as any) : undefined,
