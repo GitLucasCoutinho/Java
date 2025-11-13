@@ -1,3 +1,9 @@
+/**
+ * @file Componente de autenticação do usuário.
+ * Gerencia o fluxo de login com Google e o logout.
+ * Exibe um botão de "Entrar" se o usuário não estiver logado,
+ * ou um menu de avatar com a opção "Sair" se estiver logado.
+ */
 "use client";
 
 import {
@@ -19,20 +25,30 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, User } from "lucide-react";
 
+/**
+ * Componente que lida com a interface de autenticação do usuário.
+ */
 export function UserAuth() {
   const { user, auth } = useFirebase();
 
+  /**
+   * Inicia o fluxo de login com o Google usando redirecionamento.
+   */
   const handleGoogleSignIn = () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
     signInWithRedirect(auth, provider);
   };
 
+  /**
+   * Realiza o logout do usuário.
+   */
   const handleSignOut = () => {
     if (!auth) return;
     signOut(auth);
   };
 
+  // Se não houver usuário, exibe o botão de login.
   if (!user) {
     return (
       <Button variant="outline" onClick={handleGoogleSignIn}>
@@ -42,8 +58,10 @@ export function UserAuth() {
     );
   }
 
+  // Define a inicial do usuário para o Avatar de fallback.
   const userInitial = user.displayName ? user.displayName.charAt(0) : <User className="h-4 w-4" />;
 
+  // Se o usuário estiver logado, exibe o menu dropdown com suas informações.
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

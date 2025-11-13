@@ -1,3 +1,7 @@
+/**
+ * @file Componente para exibir um único card de tarefa.
+ * Mostra o título, descrição (se houver) e ações como completar, editar e excluir.
+ */
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,13 +11,20 @@ import { Trash2, Pencil } from "lucide-react";
 import type { Task } from "@/types";
 import { cn } from "@/lib/utils";
 
+/**
+ * Propriedades para o componente TaskCard.
+ */
 type TaskCardProps = {
-  task: Task;
-  onToggleComplete: (id: string) => void;
-  onDelete: (id: string) => void;
-  onEdit: (task: Task) => void;
+  task: Task;                          // O objeto da tarefa a ser exibido.
+  onToggleComplete: (id: string) => void; // Função para alternar o estado de conclusão.
+  onDelete: (id: string) => void;       // Função para excluir a tarefa.
+  onEdit: (task: Task) => void;        // Função para abrir o modo de edição da tarefa.
 };
 
+/**
+ * Renderiza um cartão individual para uma tarefa, com controles para interagir com ela.
+ * @param {TaskCardProps} props - As propriedades do componente.
+ */
 export function TaskCard({
   task,
   onToggleComplete,

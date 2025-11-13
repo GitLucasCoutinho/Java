@@ -1,4 +1,13 @@
-// Inspired by https://github.com/firebase/firebaseui-web-react/blob/master/src/firebaseui.tsx
+/**
+ * @file Contém componentes de ícones SVG personalizados.
+ * Inspirado em https://github.com/firebase/firebaseui-web-react/blob/master/src/firebaseui.tsx
+ */
+
+/**
+ * Componente SVG para o ícone do Google.
+ * @param {React.SVGProps<SVGSVGElement>} props - Propriedades SVG padrão.
+ * @returns {JSX.Element} O ícone do Google como um elemento SVG.
+ */
 export function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg

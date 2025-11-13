@@ -1,12 +1,18 @@
+/**
+ * @file Define os tipos de dados centrais para a aplicação.
+ */
 import { FieldValue } from 'firebase/firestore';
 
+/**
+ * Representa a estrutura de um objeto de Tarefa (Task).
+ */
 export type Task = {
-  id: string;
-  title: string;
-  description: string;
-  isCompleted: boolean;
-  category: string;
-  createdAt?: FieldValue | Date;
-  updatedAt?: FieldValue | Date;
-  userId: string;
+  id: string;                      // ID único do documento no Firestore.
+  title: string;                   // O título da tarefa.
+  description: string;             // Descrição detalhada da tarefa.
+  isCompleted: boolean;            // Status de conclusão da tarefa.
+  category: string;                // Categoria à qual a tarefa pertence.
+  createdAt?: FieldValue | Date;   // Timestamp de criação (pode ser do servidor ou cliente).
+  updatedAt?: FieldValue | Date;   // Timestamp da última atualização.
+  userId: string;                  // ID do usuário proprietário da tarefa.
 };

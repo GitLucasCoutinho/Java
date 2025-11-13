@@ -1,19 +1,28 @@
+/**
+ * @file Arquivo de configuração do Tailwind CSS.
+ * Define o tema, plugins e outras configurações para o framework de CSS.
+ */
 import type {Config} from 'tailwindcss';
 
 export default {
+  // Habilita o modo escuro baseado em uma classe no elemento HTML.
   darkMode: ['class'],
+  // Arquivos onde o Tailwind deve procurar por classes para gerar o CSS.
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Define o tema da aplicação.
   theme: {
     extend: {
+      // Define as famílias de fontes personalizadas.
       fontFamily: {
         body: ['PT Sans', 'sans-serif'],
         headline: ['PT Sans', 'sans-serif'],
         code: ['monospace'],
       },
+      // Define as cores personalizadas usando variáveis CSS (HSL) do `globals.css`.
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -66,11 +75,13 @@ export default {
           ring: 'hsl(var(--sidebar-ring))',
         },
       },
+      // Define o raio das bordas baseado em uma variável CSS.
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      // Define keyframes para animações personalizadas.
       keyframes: {
         'accordion-down': {
           from: {
@@ -89,11 +100,13 @@ export default {
           },
         },
       },
+      // Define animações que usam os keyframes acima.
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
   },
+  // Adiciona plugins ao Tailwind, como o `tailwindcss-animate`.
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;

@@ -1,3 +1,7 @@
+/**
+ * @file Componente de diálogo (modal) para editar uma tarefa existente.
+ * Utiliza react-hook-form para o formulário e Zod para validação, dentro de um componente de diálogo do ShadCN.
+ */
 "use client";
 
 import { useEffect } from "react";
@@ -12,21 +16,32 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { Task } from "@/types";
 
+/**
+ * Esquema de validação para o formulário de edição de tarefa.
+ */
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
 });
 
+/**
+ * Propriedades para o componente EditTaskDialog.
+ */
 type EditTaskDialogProps = {
-  task: Task | null;
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (task: Task) => void;
+  task: Task | null;      // A tarefa a ser editada, ou null se nenhuma tarefa estiver sendo editada.
+  isOpen: boolean;        // Controla a visibilidade do diálogo.
+  onClose: () => void;    // Função chamada quando o diálogo é fechado.
+  onSave: (task: Task) => void; // Função chamada para salvar as alterações da tarefa.
 };
 
+// Categorias de tarefas fixas.
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
+/**
+ * Um diálogo modal que permite ao usuário editar os detalhes de uma tarefa existente.
+ * @param {EditTaskDialogProps} props - As propriedades do componente.
+ */
 export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialogProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,6 +52,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
     },
   });
 
+  // Efeito para preencher o formulário com os dados da tarefa quando ela é selecionada para edição.
   useEffect(() => {
     if (task) {
       form.reset({
@@ -47,6 +63,10 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
     }
   }, [task, form]);
 
+  /**
+   * Função chamada ao submeter o formulário de edição.
+   * @param {z.infer<typeof formSchema>} values - Os valores do formulário validados.
+   */
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (task) {
       onSave({

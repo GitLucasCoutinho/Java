@@ -1,3 +1,7 @@
+/**
+ * @file Componente de formulário para adicionar uma nova tarefa.
+ * Utiliza react-hook-form para gerenciamento de estado do formulário e Zod para validação.
+ */
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -12,18 +16,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import type { Task } from "@/types";
 
+/**
+ * Esquema de validação para o formulário de adicionar tarefa.
+ */
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
 });
 
+/**
+ * Propriedades para o componente AddTaskForm.
+ */
 type AddTaskFormProps = {
   onAddTask: (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => void;
 };
 
+// Categorias de tarefas fixas para o seletor.
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
+/**
+ * Um formulário encapsulado em um Card para adicionar novas tarefas à lista.
+ * @param {AddTaskFormProps} props - Propriedades do componente.
+ */
 export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,6 +49,10 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
     },
   });
 
+  /**
+   * Função chamada ao submeter o formulário.
+   * @param {z.infer<typeof formSchema>} values - Os valores do formulário validados.
+   */
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAddTask({ title: values.title, description: values.description || "", category: values.category });
     form.reset();
