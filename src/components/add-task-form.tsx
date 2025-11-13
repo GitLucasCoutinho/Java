@@ -237,7 +237,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
                 />
             </div>
         </div>
-        <Button type="submit" className="w-full bg-gradient-radial from-primary to-green-900 text-primary-foreground">Adicionar Tarefa</Button>
+        <Button type="submit" className="w-full font-bold bg-gradient-radial from-primary to-green-900 text-primary-foreground">Adicionar Tarefa</Button>
       </form>
     </Form>
   );

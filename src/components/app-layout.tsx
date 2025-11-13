@@ -86,7 +86,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
 
       {user && (
         <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
-          <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
+           <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
             <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
               <Link href="/calendar" legacyBehavior={false}>
                 <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
@@ -96,7 +96,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
               </Link>
               <SheetTrigger asChild>
                 <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4 bg-gradient-radial from-primary to-green-900 text-primary-foreground">
-                  <Plus className="h-8 w-8" />
+                  <Plus className="h-8 w-8" strokeWidth={2.5}/>
                   <span className="sr-only">Adicionar Tarefa</span>
                 </Button>
               </SheetTrigger>
