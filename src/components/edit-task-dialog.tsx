@@ -27,7 +27,6 @@ import { DaySelector } from "./day-selector";
  */
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
-  description: z.string().optional(),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
   recurringDays: z.array(z.string()).optional(),
   startDate: z.date().optional(),
@@ -52,7 +51,7 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
  * @param {EditTaskDialogProps} props - As propriedades do componente.
  */
 export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialogProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof formSchema> & { description?: string }>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -80,7 +79,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
    * Função chamada ao submeter o formulário de edição.
    * @param {z.infer<typeof formSchema>} values - Os valores do formulário validados.
    */
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof formSchema> & { description?: string }) {
     if (task) {
       onSave({
         ...task,
