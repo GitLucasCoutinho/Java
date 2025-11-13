@@ -12,8 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
 import type { Task } from "@/types";
 import { useEffect } from "react";
 
@@ -31,28 +29,31 @@ const formSchema = z.object({
  */
 type AddTaskFormProps = {
   onAddTask: (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => void;
-  defaultCategory: string;
+  onDone?: () => void;
+  defaultCategory?: string;
 };
 
 // Categorias de tarefas fixas para o seletor.
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
 /**
- * Um formulário encapsulado em um Card para adicionar novas tarefas à lista.
+ * Um formulário para adicionar novas tarefas à lista.
  * @param {AddTaskFormProps} props - Propriedades do componente.
  */
-export function AddTaskForm({ onAddTask, defaultCategory }: AddTaskFormProps) {
+export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       description: "",
-      category: defaultCategory,
+      category: defaultCategory || "Pessoal",
     },
   });
 
   useEffect(() => {
-    form.setValue('category', defaultCategory);
+    if(defaultCategory) {
+        form.setValue('category', defaultCategory);
+    }
   }, [defaultCategory, form]);
 
   /**
@@ -61,64 +62,51 @@ export function AddTaskForm({ onAddTask, defaultCategory }: AddTaskFormProps) {
    */
   function onSubmit(values: z.infer<typeof formSchema>) {
     onAddTask({ title: values.title, description: values.description || "", category: values.category });
-    form.reset({ title: "", description: "", category: values.category });
+    form.reset();
+    onDone?.();
   }
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-border/50 shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Plus className="h-5 w-5" />
-          Adicionar Nova Tarefa
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Título da Tarefa</FormLabel>
-                      <FormControl>
-                        <Input placeholder="ex: Comprar mantimentos para a semana" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div>
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Categoria</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma categoria" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {taskCategories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Título da Tarefa</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ex: Comprar mantimentos para a semana" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Categoria</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {taskCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="description"
@@ -136,10 +124,9 @@ export function AddTaskForm({ onAddTask, defaultCategory }: AddTaskFormProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar Tarefa</Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        </div>
+        <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar Tarefa</Button>
+      </form>
+    </Form>
   );
 }

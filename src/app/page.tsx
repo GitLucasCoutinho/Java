@@ -1,7 +1,7 @@
 /**
  * @file Componente principal da página inicial.
  * Gerencia o estado das tarefas, a autenticação do usuário e a interação com o Firestore.
- * Renderiza a lista de tarefas, o formulário para adicionar novas tarefas e a UI de autenticação.
+ * Renderiza a lista de tarefas e a nova barra de navegação inferior.
  */
 "use client";
 
@@ -15,14 +15,10 @@ import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
-import { SidebarProvider, Sidebar, SidebarInset, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarTrigger } from "@/components/ui/sidebar";
-import { CheckSquare, Folder } from "lucide-react";
+import { Calendar, Plus, ListTodo } from "lucide-react";
 import { TaskSquareIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
-
-
-// Categorias de tarefas disponíveis no aplicativo.
-const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
+import { Button } from "@/components/ui/button";
 
 /**
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
@@ -30,7 +26,6 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 export default function Home() {
   const { firestore, user } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Pessoal");
 
   // Memoiza a referência da coleção de tarefas do usuário no Firestore.
   const tasksCollection = useMemoFirebase(() => {
@@ -45,7 +40,7 @@ export default function Home() {
    * Adiciona uma nova tarefa ao Firestore.
    * @param {Omit<Task, "id" | "isCompleted" | "userId">} taskData - Os dados da nova tarefa.
    */
-  const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => {
+  const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId" | "category"> & { category?: string }) => {
     if (!tasksCollection || !user) return;
     const newTask = {
       ...taskData,
@@ -53,6 +48,7 @@ export default function Home() {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       userId: user.uid,
+      category: taskData.category || "Pessoal", // Categoria padrão
     };
     addDoc(tasksCollection, newTask);
   };
@@ -98,106 +94,72 @@ export default function Home() {
     setEditingTask(null);
   };
 
-  const filteredTasks = useMemo(() => {
+  const pendingTasks = useMemo(() => {
     if (!tasks) return [];
-    if (selectedCategory === "Concluídas") {
-      return tasks.filter(task => task.isCompleted);
-    }
-    return tasks.filter(task => task.category === selectedCategory && !task.isCompleted);
-  }, [tasks, selectedCategory]);
+    return tasks.filter(task => !task.isCompleted);
+  }, [tasks]);
 
   return (
-    <SidebarProvider>
-    <div className="flex min-h-screen">
-      <Sidebar>
-          <SidebarHeader>
-            <div className="flex items-center gap-2 p-2">
-                <TaskSquareIcon className="w-8 h-8 text-primary" />
-                <h1 className="font-headline text-2xl font-bold tracking-tight text-primary">
-                    TaskFlow
-                </h1>
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <h3 className="w-full px-2 pt-4 pb-2 text-sm font-semibold text-muted-foreground">Categorias</h3>
-                </SidebarMenuItem>
-              {taskCategories.map(category => (
-                <SidebarMenuItem key={category}>
-                  <SidebarMenuButton
-                    isActive={selectedCategory === category}
-                    onClick={() => setSelectedCategory(category)}
-                    tooltip={category}
-                  >
-                    <Folder />
-                    <span>{category}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={selectedCategory === 'Concluídas'}
-                  onClick={() => setSelectedCategory('Concluídas')}
-                  tooltip="Concluídas"
-                >
-                  <CheckSquare />
-                  <span>Concluídas</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <UserAuth />
-          </SidebarFooter>
-      </Sidebar>
-      
-      <SidebarInset>
-        <main className="flex-1 p-4 md:p-8 space-y-8">
-            {!user ? (
-                 <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
-                    <TaskSquareIcon className="w-24 h-24 text-primary mb-4" />
-                    <h2 className="text-2xl font-bold mb-4">Bem-vindo ao TaskFlow</h2>
-                    <p className="text-muted-foreground">Sua lista de tarefas inteligente, calma e focada.</p>
-                    <p className="text-muted-foreground mt-2 mb-4">Faça login para começar.</p>
-                    <UserAuth />
-                </div>
-            ) : (
-                <>
-                <header className="flex items-center gap-4">
-                    <SidebarTrigger className="md:hidden" />
-                    <h2 className="font-headline text-3xl font-semibold">{selectedCategory}</h2>
-                </header>
+    <div className="flex flex-col min-h-screen bg-background">
+      <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
+        <div className="flex items-center gap-2">
+            <TaskSquareIcon className="w-8 h-8 text-primary" />
+            <h1 className="text-2xl font-bold tracking-tight text-primary">
+                TaskFlow
+            </h1>
+        </div>
+        <UserAuth />
+      </header>
 
-                {selectedCategory !== "Concluídas" && (
-                    <AddTaskForm 
-                        onAddTask={handleAddTask} 
-                        defaultCategory={selectedCategory}
-                    />
-                )}
-    
-                <section>
-                    {isLoadingTasks ? (
-                        <div className="space-y-3">
-                            <Skeleton className="h-16 w-full" />
-                            <Skeleton className="h-16 w-full" />
-                            <Skeleton className="h-16 w-full" />
-                        </div>
-                    ) : (
-                        <TaskList
-                            tasks={filteredTasks}
-                            onToggleComplete={handleToggleComplete}
-                            onDelete={handleDeleteTask}
-                            onEdit={setEditingTask}
-                            isCompletedList={selectedCategory === 'Concluídas'}
-                        />
-                    )}
-                </section>
-                </>
+      <main className="flex-1 p-4 md:p-8 space-y-8 mb-20">
+        {!user ? (
+          <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
+            <TaskSquareIcon className="w-24 h-24 text-primary mb-4" />
+            <h2 className="text-2xl font-bold mb-4">Bem-vindo ao TaskFlow</h2>
+            <p className="text-muted-foreground">Sua lista de tarefas inteligente, calma e focada.</p>
+            <p className="text-muted-foreground mt-2 mb-4">Faça login para começar.</p>
+            <UserAuth />
+          </div>
+        ) : (
+          <section>
+            <h2 className="font-headline text-3xl font-semibold mb-6">Tarefas de Hoje</h2>
+            {isLoadingTasks ? (
+              <div className="space-y-3">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+            ) : (
+              <TaskList
+                tasks={pendingTasks}
+                onToggleComplete={handleToggleComplete}
+                onDelete={handleDeleteTask}
+                onEdit={setEditingTask}
+              />
             )}
-        </main>
-      </SidebarInset>
-      
+          </section>
+        )}
+      </main>
+
+      {user && (
+         <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
+            <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
+                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
+                    <Calendar className="h-6 w-6" />
+                    <span className="sr-only">Calendário</span>
+                </Button>
+                <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
+                    <Plus className="h-8 w-8" />
+                    <span className="sr-only">Adicionar Tarefa</span>
+                </Button>
+                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
+                    <ListTodo className="h-6 w-6" />
+                    <span className="sr-only">Tarefas Pendentes</span>
+                </Button>
+            </nav>
+        </footer>
+      )}
+
       <EditTaskDialog
         task={editingTask}
         isOpen={!!editingTask}
@@ -205,6 +167,5 @@ export default function Home() {
         onSave={handleSaveTask}
       />
     </div>
-    </SidebarProvider>
   );
 }
