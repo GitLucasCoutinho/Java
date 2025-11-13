@@ -2,6 +2,56 @@
 
 Este é um aplicativo de lista de tarefas (To-Do List) construído com Next.js, React, TypeScript, Firebase e ShadCN para os componentes de UI. O aplicativo permite que os usuários gerenciem suas tarefas diárias, organizadas por categorias, com autenticação via Google.
 
+## Como Rodar Localmente
+
+Siga estas instruções para configurar e rodar o projeto em seu ambiente de desenvolvimento local.
+
+### Pré-requisitos
+
+- [Node.js](https://nodejs.org/) (versão 18 ou superior)
+- [npm](https://www.npmjs.com/) (geralmente vem com o Node.js)
+- [Git](https://git-scm.com/)
+
+### Passos
+
+1.  **Clone o repositório:**
+    Abra seu terminal e clone o projeto em uma pasta de sua escolha.
+
+    ```bash
+    git clone https://github.com/seu-usuario/seu-repositorio.git
+    cd seu-repositorio
+    ```
+    *Substitua `https://github.com/seu-usuario/seu-repositorio.git` pela URL real do seu repositório Git.*
+
+2.  **Instale as dependências:**
+    Dentro da pasta do projeto, execute o seguinte comando para instalar todas as dependências listadas no `package.json`.
+
+    ```bash
+    npm install
+    ```
+
+3.  **Configure as Variáveis de Ambiente:**
+    Crie um arquivo chamado `.env.local` na raiz do projeto, copiando o conteúdo do arquivo `src/firebase/config.ts`. Este arquivo conterá as chaves de configuração do seu projeto Firebase. O conteúdo deve ser algo como:
+
+    ```
+    NEXT_PUBLIC_FIREBASE_API_KEY="AIzaSy...CyM"
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="studio-....firebaseapp.com"
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID="studio-....-9e90f"
+    NEXT_PUBLIC_FIREBASE_APP_ID="1:40...:web:bf7..."
+    ```
+    *É crucial que você adicione o prefixo `NEXT_PUBLIC_` a cada chave para que elas sejam acessíveis no lado do cliente no Next.js.*
+
+4.  **Rode o servidor de desenvolvimento:**
+    Execute o comando abaixo para iniciar o aplicativo em modo de desenvolvimento.
+
+    ```bash
+    npm run dev
+    ```
+
+5.  **Acesse o aplicativo:**
+    Abra seu navegador e acesse [http://localhost:9002](http://localhost:9002) (ou a porta que for indicada no seu terminal).
+
+
 ## Estrutura do Projeto
 
 ```
