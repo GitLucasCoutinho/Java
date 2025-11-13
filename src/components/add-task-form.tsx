@@ -27,6 +27,7 @@ import { DaySelector } from "./day-selector";
 const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
+  description: z.string().optional().nullable(),
   recurringDays: z.array(z.string()).optional(),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
@@ -49,7 +50,7 @@ const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
  * @param {AddTaskFormProps} props - Propriedades do componente.
  */
 export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormProps) {
-  const form = useForm<z.infer<typeof formSchema> & { description?: string }>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -69,7 +70,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
    * Função chamada ao submeter o formulário.
    * @param {z.infer<typeof formSchema>} values - Os valores do formulário validados.
    */
-  function onSubmit(values: z.infer<typeof formSchema> & { description?: string }) {
+  function onSubmit(values: z.infer<typeof formSchema>) {
     onAddTask({ 
         title: values.title, 
         description: values.description || "", 
