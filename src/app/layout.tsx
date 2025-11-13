@@ -7,12 +7,6 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase';
-import { handleRedirect } from '@/firebase/auth/handle-redirect';
-
-// Lida com o resultado do redirecionamento de login do Firebase.
-// Chamar esta função aqui garante que o resultado seja processado
-// o mais cedo possível no ciclo de vida do aplicativo.
-handleRedirect();
 
 /**
  * Metadados da página, como título e descrição.
