@@ -1,33 +1,23 @@
 /**
  * @file Componente principal da página inicial.
  * Gerencia o estado das tarefas, a autenticação do usuário e a interação com o Firestore.
- * Renderiza la lista de tarefas e a nova barra de navegação inferior.
+ * Renderiza a lista de tarefas pendentes e concluídas.
  */
 "use client";
 
 import { useState, useMemo } from "react";
 import type { Task } from "@/types";
-import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
-import { Calendar, Plus, ListTodo } from "lucide-react";
 import { TaskSquareIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
+import { AppLayout } from "@/components/app-layout";
 
 /**
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
@@ -35,7 +25,6 @@ import Link from "next/link";
 export default function Home() {
   const { firestore, user } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
-  const [isAddTaskSheetOpen, setAddTaskSheetOpen] = useState(false);
 
   // Memoiza a referência da coleção de tarefas do usuário no Firestore.
   const tasksCollection = useMemoFirebase(() => {
@@ -45,29 +34,6 @@ export default function Home() {
 
   // Hook para buscar as tarefas da coleção em tempo real.
   const { data: tasks, isLoading: isLoadingTasks } = useCollection<Task>(tasksCollection);
-
-  /**
-   * Adiciona uma nova tarefa ao Firestore.
-   * @param {Omit<Task, "id" | "isCompleted" | "userId">} taskData - Os dados da nova tarefa.
-   */
-  const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId" | "category"> & { category?: string }) => {
-    if (!tasksCollection || !user) return;
-    const newTask: Omit<Task, 'id'> = {
-      title: taskData.title,
-      description: taskData.description || '',
-      isCompleted: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      userId: user.uid,
-      category: taskData.category || "Pessoal",
-      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : null,
-      endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : null,
-      recurringDays: taskData.recurringDays || [],
-    };
-
-    addDoc(tasksCollection, newTask);
-    setAddTaskSheetOpen(false);
-  };
 
   /**
    * Alterna o estado de conclusão de uma tarefa.
@@ -128,17 +94,7 @@ export default function Home() {
   }, [tasks]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-            <TaskSquareIcon className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold tracking-tight text-primary">
-                TaskFlow
-            </h1>
-        </div>
-        <UserAuth />
-      </header>
-
+    <AppLayout>
       <main className="flex-1 p-4 md:p-8 space-y-8 mb-20">
         {!user ? (
           <div className="flex flex-col items-center justify-center min-h-[70vh] text-center">
@@ -188,45 +144,12 @@ export default function Home() {
         )}
       </main>
 
-      {user && (
-        <Sheet open={isAddTaskSheetOpen} onOpenChange={setAddTaskSheetOpen}>
-         <footer className="fixed bottom-0 left-0 right-0 z-10 border-t bg-background/95 backdrop-blur-sm">
-            <nav className="flex justify-around items-center h-16 max-w-md mx-auto">
-              <Link href="/calendar">
-                  <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
-                      <Calendar className="h-6 w-6" />
-                      <span className="sr-only">Calendário</span>
-                  </Button>
-              </Link>
-              <SheetTrigger asChild>
-                  <Button variant="default" size="icon" className="h-16 w-16 rounded-full shadow-lg -translate-y-4">
-                      <Plus className="h-8 w-8" />
-                      <span className="sr-only">Adicionar Tarefa</span>
-                  </Button>
-              </SheetTrigger>
-              <Link href="/categories">
-                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-full">
-                    <ListTodo className="h-6 w-6" />
-                    <span className="sr-only">Tarefas por Categoria</span>
-                </Button>
-              </Link>
-            </nav>
-        </footer>
-        <SheetContent side="bottom" className="rounded-t-lg max-h-[90vh] overflow-y-auto">
-            <SheetHeader className="text-left mb-6">
-                <SheetTitle>Adicionar Nova Tarefa</SheetTitle>
-            </SheetHeader>
-            <AddTaskForm onAddTask={handleAddTask} onDone={() => setAddTaskSheetOpen(false)} />
-        </SheetContent>
-        </Sheet>
-      )}
-
       <EditTaskDialog
         task={editingTask}
         isOpen={!!editingTask}
         onClose={() => setEditingTask(null)}
         onSave={handleSaveTask}
       />
-    </div>
+    </AppLayout>
   );
 }

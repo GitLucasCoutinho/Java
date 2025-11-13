@@ -11,13 +11,11 @@ import { useFirebase } from "@/firebase";
 import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
-import { UserAuth } from "@/components/user-auth";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, ListTodo } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { ListTodo } from "lucide-react";
+import { AppLayout } from "@/components/app-layout";
+
 
 /**
  * Agrupa as tarefas por categoria.
@@ -92,23 +90,8 @@ export default function CategoriesPage() {
   const categories = useMemo(() => Object.keys(groupedTasks), [groupedTasks]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-       <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-            <Link href="/">
-                <Button variant="ghost" size="icon" aria-label="Voltar para a página inicial">
-                    <ArrowLeft className="h-6 w-6" />
-                </Button>
-            </Link>
-            <h1 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
-                <ListTodo className="h-6 w-6"/>
-                Tarefas por Categoria
-            </h1>
-        </div>
-        <UserAuth />
-      </header>
-
-      <main className="flex-1 p-4 md:p-8 space-y-8">
+    <AppLayout pageTitle="Tarefas por Categoria" pageIcon={<ListTodo className="h-6 w-6"/>}>
+      <main className="flex-1 p-4 md:p-8 space-y-8 mb-20">
         {!user ? (
           <div className="text-center py-16">
             <p>Faça login para ver suas tarefas.</p>
@@ -151,6 +134,6 @@ export default function CategoriesPage() {
         onClose={() => setEditingTask(null)}
         onSave={handleSaveTask}
       />
-    </div>
+    </AppLayout>
   );
 }

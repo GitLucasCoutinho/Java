@@ -9,16 +9,14 @@ import { useFirebase } from "@/firebase";
 import { collection, Timestamp, doc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
-import { Calendar as CalendarIcon, ArrowLeft } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
-import { isSameDay, parseISO } from "date-fns";
+import { isSameDay } from "date-fns";
 import { ptBR } from 'date-fns/locale';
-import { UserAuth } from "@/components/user-auth";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { AppLayout } from "@/components/app-layout";
 
 export default function CalendarPage() {
   const { firestore, user } = useFirebase();
@@ -30,7 +28,7 @@ export default function CalendarPage() {
     return collection(firestore, "users", user.uid, "tasks");
   }, [firestore, user]);
 
-  const { data: tasks, isLoading: isLoadingTasks } = useCollection<Task>(tasksCollection);
+  const { data: tasks } = useCollection<Task>(tasksCollection);
 
   // Memoiza as tarefas que têm datas
   const tasksWithDates = useMemo(() => {
@@ -93,23 +91,8 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-       <header className="sticky top-0 z-10 flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center gap-2">
-            <Link href="/">
-                <Button variant="ghost" size="icon" aria-label="Voltar para a página inicial">
-                    <ArrowLeft className="h-6 w-6" />
-                </Button>
-            </Link>
-            <h1 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
-                <CalendarIcon className="h-6 w-6"/>
-                Calendário
-            </h1>
-        </div>
-        <UserAuth />
-      </header>
-
-      <main className="flex-1 flex flex-col items-center p-4 md:p-8 space-y-8">
+    <AppLayout pageTitle="Calendário" pageIcon={<CalendarIcon className="h-6 w-6"/>}>
+      <main className="flex-1 flex flex-col items-center p-4 md:p-8 space-y-8 mb-20">
         <Calendar
             mode="single"
             selected={selectedDate}
@@ -161,6 +144,6 @@ export default function CalendarPage() {
         onClose={() => setEditingTask(null)}
         onSave={handleSaveTask}
       />
-    </div>
+    </AppLayout>
   );
 }
