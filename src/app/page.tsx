@@ -11,7 +11,7 @@ import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
@@ -58,6 +58,8 @@ export default function Home() {
       updatedAt: serverTimestamp(),
       userId: user.uid,
       category: taskData.category || "Pessoal", // Categoria padrão
+      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : undefined,
+      endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : undefined,
     };
     addDoc(tasksCollection, newTask);
     setAddTaskSheetOpen(false);
@@ -97,10 +99,16 @@ export default function Home() {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, updatedTask.id);
     const { id, ...taskToUpdate } = updatedTask;
-    updateDoc(taskRef, {
-      ...taskToUpdate,
-      updatedAt: serverTimestamp(),
-    });
+
+    const dataToUpdate: any = {
+        ...taskToUpdate,
+        updatedAt: serverTimestamp(),
+        startDate: updatedTask.startDate ? Timestamp.fromDate(new Date(updatedTask.startDate)) : null,
+        endDate: updatedTask.endDate ? Timestamp.fromDate(new Date(updatedTask.endDate)) : null,
+    };
+
+
+    updateDoc(taskRef, dataToUpdate);
     setEditingTask(null);
   };
 

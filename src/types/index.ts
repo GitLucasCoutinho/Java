@@ -15,4 +15,6 @@ export type Task = {
   createdAt?: FieldValue | Date;   // Timestamp de criação (pode ser do servidor ou cliente).
   updatedAt?: FieldValue | Date;   // Timestamp da última atualização.
   userId: string;                  // ID do usuário proprietário da tarefa.
+  startDate?: FieldValue | Date;   // Data de início opcional.
+  endDate?: FieldValue | Date;     // Data de término opcional.
 };

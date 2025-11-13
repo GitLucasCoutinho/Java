@@ -7,9 +7,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2, Pencil, CalendarIcon } from "lucide-react";
 import type { Task } from "@/types";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 /**
  * Propriedades para o componente TaskCard.
@@ -31,6 +32,17 @@ export function TaskCard({
   onDelete,
   onEdit,
 }: TaskCardProps) {
+
+  const formatDate = (date: any) => {
+    if (!date) return null;
+    // Firestore Timestamps need to be converted to JS Date objects
+    const jsDate = date.toDate ? date.toDate() : new Date(date);
+    return format(jsDate, "dd/MM/yyyy");
+  };
+
+  const startDate = formatDate(task.startDate);
+  const endDate = formatDate(task.endDate);
+  
   return (
     <Card
       className={cn(
@@ -65,6 +77,14 @@ export function TaskCard({
             >
               {task.description}
             </p>
+          )}
+           {(startDate || endDate) && (
+            <div className={cn("text-xs text-muted-foreground flex items-center gap-1 mt-1", task.isCompleted && "line-through")}>
+              <CalendarIcon className="h-3 w-3" />
+              <span>{startDate}</span>
+              {startDate && endDate && <span> - </span>}
+              <span>{endDate}</span>
+            </div>
           )}
         </div>
         <div className="flex gap-2">

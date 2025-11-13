@@ -39,6 +39,16 @@
         "userId": {
           "type": "string",
           "description": "O ID do usuário que possui a tarefa."
+        },
+        "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A data de início opcional da tarefa."
+        },
+        "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A data de término opcional da tarefa."
         }
       },
       "required": [
