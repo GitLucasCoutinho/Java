@@ -60,7 +60,7 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
     }
     return (
       <>
-        <Link href="/" legacyBehavior>
+        <Link href="/">
           <Button variant="ghost" size="icon" aria-label="Voltar para a página inicial">
             <ArrowLeft className="h-6 w-6" />
           </Button>
