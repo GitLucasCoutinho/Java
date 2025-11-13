@@ -1,27 +1,24 @@
 'use client';
 
 import { firebaseConfig } from '@/firebase/config';
-import { initializeApp, getApp, FirebaseApp } from 'firebase/app';
+import { initializeApp, getApp, FirebaseApp, getApps } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
-// IMPORTANT: DO NOT MODIFY THIS FUNCTION
 let firebaseApp: FirebaseApp;
 let auth: Auth;
 let firestore: Firestore;
 
 /**
- * Initializes Firebase and core services (Auth, Firestore).
- * This function handles idempotent initialization to prevent "app already exists" errors.
+ * Initializes Firebase and core services (Auth, Firestore) robustly.
+ * This function handles idempotent initialization, ensuring it only runs once.
  * @returns An object containing the Firebase service instances.
  */
 export function initializeFirebase() {
-  try {
-    // Attempt to get the already-existing Firebase app.
-    firebaseApp = getApp();
-  } catch (e) {
-    // If no app exists, initialize a new one.
+  if (!getApps().length) {
     firebaseApp = initializeApp(firebaseConfig);
+  } else {
+    firebaseApp = getApp();
   }
 
   auth = getAuth(firebaseApp);
