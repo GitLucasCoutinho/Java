@@ -55,27 +55,21 @@ export default function CalendarPage() {
     });
   };
 
-  const { pendingDays, completedDays } = useMemo(() => {
-    if (!tasks) return { pendingDays: [], completedDays: [] };
-
-    const pending: Date[] = [];
-    const completed: Date[] = [];
-    
+  const taskDays = useMemo(() => {
+    if (!tasks) return [];
+  
+    const daysWithTasks: Date[] = [];
     const interval = { start: startOfMonth(currentMonth), end: endOfMonth(currentMonth) };
     const daysInMonth = eachDayOfInterval(interval);
-
+  
     daysInMonth.forEach(day => {
       const tasksForDay = getTasksForDay(day, tasks);
       if (tasksForDay.length > 0) {
-        if (tasksForDay.every(t => t.isCompleted)) {
-          completed.push(day);
-        } else {
-          pending.push(day);
-        }
+        daysWithTasks.push(day);
       }
     });
-
-    return { pendingDays: pending, completedDays: completed };
+  
+    return daysWithTasks;
   }, [tasks, currentMonth]);
 
   const tasksForSelectedDay = useMemo(() => {
@@ -119,25 +113,20 @@ export default function CalendarPage() {
   };
 
   const DayContent = ({ date }: { date: Date }) => {
-    const isPending = pendingDays.some(d => isSameDay(d, date));
-    const isCompleted = completedDays.some(d => isSameDay(d, date));
-    
-    let dotColor = '';
-    if (isPending) dotColor = 'bg-orange-500';
-    else if (isCompleted) dotColor = 'bg-green-500';
+    const hasTasks = taskDays.some(d => isSameDay(d, date));
 
     return (
       <div className="relative h-full w-full flex items-center justify-center">
         <span>{format(date, 'd')}</span>
-        {dotColor && (
-          <div className={`absolute bottom-1 h-1.5 w-1.5 rounded-full ${dotColor}`} />
+        {hasTasks && (
+          <div className="absolute bottom-1 h-1.5 w-1.5 rounded-full bg-green-900" />
         )}
       </div>
     );
   };
 
   return (
-    <AppLayout pageTitle="Calendário" pageIcon={<CalendarIcon className="h-6 w-6"/>}>
+    <AppLayout pageTitle="Calendário" pageIcon={<CalendarIcon className="h-6 w-6 text-green-900"/>}>
       <main className="flex-1 flex flex-col items-center p-4 md:p-8 space-y-8 mb-20">
         <Calendar
             mode="single"
