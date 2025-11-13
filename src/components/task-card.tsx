@@ -22,6 +22,17 @@ type TaskCardProps = {
   onEdit: (task: Task) => void;        // Função para abrir o modo de edição da tarefa.
 };
 
+const recurringDaysMap: { [key: string]: string } = {
+  SUN: 'DOM',
+  MON: 'SEG',
+  TUE: 'TER',
+  WED: 'QUA',
+  THU: 'QUI',
+  FRI: 'SEX',
+  SAT: 'SAB',
+};
+
+
 /**
  * Renderiza um cartão individual para uma tarefa, com controles para interagir com ela.
  * @param {TaskCardProps} props - As propriedades do componente.
@@ -44,7 +55,7 @@ export function TaskCard({
   const endDate = formatDate(task.endDate);
 
   const recurringDaysText = task.recurringDays && task.recurringDays.length > 0
-    ? task.recurringDays.join(', ')
+    ? task.recurringDays.map(day => recurringDaysMap[day]).join(', ')
     : null;
   
   return (
