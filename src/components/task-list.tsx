@@ -36,9 +36,9 @@ export function TaskList({
       ) : (
         <div className="text-center text-muted-foreground py-8 px-4 border-2 border-dashed rounded-lg">
           <p>
-            {title === "Completed"
-              ? "No completed tasks yet."
-              : "You're all caught up!"}
+            {title === "Concluídas"
+              ? "Nenhuma tarefa concluída ainda."
+              : "Você está em dia!"}
           </p>
         </div>
       )}

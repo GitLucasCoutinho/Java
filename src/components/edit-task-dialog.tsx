@@ -12,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import type { Task } from "@/types";
 
 const formSchema = z.object({
-  title: z.string().min(2, "Title must be at least 2 characters."),
+  title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
 });
 
@@ -55,7 +55,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Task</DialogTitle>
+          <DialogTitle>Editar Tarefa</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
@@ -64,7 +64,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Task Title</FormLabel>
+                  <FormLabel>Título da Tarefa</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -77,7 +77,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Descrição</FormLabel>
                   <FormControl>
                     <Textarea className="resize-none" {...field} />
                   </FormControl>
@@ -88,10 +88,10 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
             <DialogFooter>
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
-                  Cancel
+                  Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit">Salvar alterações</Button>
             </DialogFooter>
           </form>
         </Form>

@@ -16,16 +16,16 @@ import { getAiSuggestions } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  title: z.string().min(2, "Title must be at least 2 characters."),
+  title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
-  category: z.string().min(1, "Please select a category."),
+  category: z.string().min(1, "Por favor, selecione uma categoria."),
 });
 
 type AddTaskFormProps = {
   onAddTask: (taskData: Omit<Task, "id" | "completed">) => void;
 };
 
-const taskCategories = ["Personal", "Work", "Shopping", "Errands", "Study"];
+const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
 export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -37,7 +37,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
     defaultValues: {
       title: "",
       description: "",
-      category: "Personal",
+      category: "Pessoal",
     },
   });
 
@@ -51,7 +51,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
     if (result.error) {
       toast({
         variant: "destructive",
-        title: "Suggestion Error",
+        title: "Erro na Sugestão",
         description: result.error,
       });
     } else if (result.suggestions) {
@@ -71,7 +71,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Plus className="h-5 w-5" />
-          Add a New Task
+          Adicionar Nova Tarefa
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -84,9 +84,9 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Task Title</FormLabel>
+                      <FormLabel>Título da Tarefa</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Buy groceries for the week" {...field} />
+                        <Input placeholder="ex: Comprar mantimentos para a semana" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -99,11 +99,11 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category</FormLabel>
+                      <FormLabel>Categoria</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder="Selecione uma categoria" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -133,7 +133,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
               ) : (
                 <Sparkles className="mr-2 h-4 w-4" />
               )}
-              Smart Suggest Titles
+              Sugerir Títulos Inteligentes
             </Button>
             
             {suggestions.length > 0 && (
@@ -161,10 +161,10 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description (Optional)</FormLabel>
+                  <FormLabel>Descrição (Opcional)</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Add more details about the task..."
+                      placeholder="Adicione mais detalhes sobre a tarefa..."
                       className="resize-none"
                       {...field}
                     />
@@ -173,7 +173,7 @@ export function AddTaskForm({ onAddTask }: AddTaskFormProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">Add Task</Button>
+            <Button type="submit" className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground">Adicionar Tarefa</Button>
           </form>
         </Form>
       </CardContent>

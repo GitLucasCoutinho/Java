@@ -33,7 +33,7 @@ export function TaskCard({
           checked={task.completed}
           onCheckedChange={() => onToggleComplete(task.id)}
           className="mt-1"
-          aria-label={`Mark task "${task.title}" as ${task.completed ? 'incomplete' : 'complete'}`}
+          aria-label={`Marcar tarefa "${task.title}" como ${task.completed ? 'incompleta' : 'completa'}`}
         />
         <div className="flex-1 grid gap-1">
           <label
@@ -62,7 +62,7 @@ export function TaskCard({
             size="icon"
             className="h-8 w-8"
             onClick={() => onEdit(task)}
-            aria-label={`Edit task "${task.title}"`}
+            aria-label={`Editar tarefa "${task.title}"`}
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -71,7 +71,7 @@ export function TaskCard({
             size="icon"
             className="h-8 w-8 text-destructive/80 hover:text-destructive hover:bg-destructive/10"
             onClick={() => onDelete(task.id)}
-            aria-label={`Delete task "${task.title}"`}
+            aria-label={`Excluir tarefa "${task.title}"`}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

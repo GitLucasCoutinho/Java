@@ -10,26 +10,26 @@ import { Separator } from "@/components/ui/separator";
 const initialTasks: Task[] = [
   {
     id: "1",
-    title: "Set up project structure",
-    description: "Initialize Next.js app and install dependencies.",
+    title: "Configurar a estrutura do projeto",
+    description: "Inicializar o aplicativo Next.js e instalar dependências.",
     completed: true,
   },
   {
     id: "2",
-    title: "Design the UI",
-    description: "Create mockups and choose a color palette.",
+    title: "Projetar a interface do usuário",
+    description: "Criar mockups e escolher uma paleta de cores.",
     completed: true,
   },
   {
     id: "3",
-    title: "Develop core components",
-    description: "Build TaskCard, TaskList, and AddTaskForm components.",
+    title: "Desenvolver componentes principais",
+    description: "Construir os componentes TaskCard, TaskList e AddTaskForm.",
     completed: false,
   },
   {
     id: "4",
-    title: "Integrate AI suggestions",
-    description: "Implement the GenAI feature for task name suggestions.",
+    title: "Integrar sugestões de IA",
+    description: "Implementar o recurso GenAI para sugestões de nomes de tarefas.",
     completed: false,
   },
 ];
@@ -89,7 +89,7 @@ export default function Home() {
           TaskFlow
         </h1>
         <p className="text-muted-foreground mt-2">
-          Your calm and focused smart to-do list
+          Sua lista de tarefas inteligente, calma e focada
         </p>
       </header>
 
@@ -100,14 +100,14 @@ export default function Home() {
 
         <div className="space-y-8">
           <TaskList
-            title="Pending"
+            title="Pendentes"
             tasks={pendingTasks}
             onToggleComplete={handleToggleComplete}
             onDelete={handleDeleteTask}
             onEdit={setEditingTask}
           />
           <TaskList
-            title="Completed"
+            title="Concluídas"
             tasks={completedTasks}
             onToggleComplete={handleToggleComplete}
             onDelete={handleDeleteTask}
