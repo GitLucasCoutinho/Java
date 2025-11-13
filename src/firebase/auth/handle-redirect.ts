@@ -22,9 +22,7 @@ let redirectResultPromise: Promise<UserCredential | null> | null = null;
 export function handleRedirect(): void {
   if (typeof window !== 'undefined' && !redirectResultPromise) {
     // Inicializa o Firebase para garantir que a instância de autenticação esteja disponível.
-    initializeFirebase();
-    // Obtém a instância de autenticação.
-    const auth = getAuth();
+    const { auth } = initializeFirebase();
     // Chama getRedirectResult e armazena a promessa.
     redirectResultPromise = getRedirectResult(auth);
   }

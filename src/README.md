@@ -29,15 +29,36 @@ Siga estas instruções para configurar e rodar o projeto em seu ambiente de des
     ```bash
     npm install
     ```
+3.  **Configure o Firebase:**
+    Para que o aplicativo se conecte ao Firebase, você precisa criar um projeto e adicionar as chaves de configuração.
 
-3.  **Rode o servidor de desenvolvimento:**
+    **a. Crie e Configure seu Projeto no Firebase:**
+    - Acesse o [Console do Firebase](https://console.firebase.google.com/) e crie um novo projeto.
+    - No seu projeto, vá para **Authentication**, clique em **Começar** e ative o provedor de login do **Google**.
+    - Em seguida, vá para **Firestore Database**, clique em **Criar banco de dados**, inicie em **modo de produção** e escolha um local para o seu servidor.
+
+    **b. Obtenha as Chaves de Configuração:**
+    - Na página principal do seu projeto, clique no ícone da Web (`</>`) para adicionar um novo aplicativo da Web.
+    - Dê um nome ao seu aplicativo e registre-o. O Firebase fornecerá um objeto de configuração.
+
+    **c. Adicione as Chaves ao Projeto:**
+    - No arquivo `src/firebase/config.ts`, substitua o objeto `firebaseConfig` existente pelo objeto que você copiou do Firebase.
+
+    **d. (MUITO IMPORTANTE) Autorize os Domínios de Acesso:**
+    - Para que o login com Google funcione (tanto localmente quanto em produção), você precisa autorizar os domínios que acessarão a autenticação.
+    - No Console do Firebase, vá para **Authentication** > **Settings**.
+    - Em **Domínios autorizados**, adicione os seguintes domínios:
+        - `localhost` (para desenvolvimento local)
+        - O domínio onde seu site está hospedado (ex: `todoperseu.netlify.app`)
+
+4.  **Rode o servidor de desenvolvimento:**
     Execute o comando abaixo para iniciar o aplicativo em modo de desenvolvimento.
 
     ```bash
     npm run dev
     ```
 
-4.  **Acesse o aplicativo:**
+5.  **Acesse o aplicativo:**
     Abra seu navegador e acesse [http://localhost:9002](http://localhost:9002) (ou a porta que for indicada no seu terminal).
 
 
@@ -107,6 +128,8 @@ Siga estas instruções para configurar e rodar o projeto em seu ambiente de des
 │   │   │   └── toaster.tsx
 │   │   └── user-auth.tsx
 │   ├── firebase
+│   │   ├── auth
+│   │   │   └── handle-redirect.ts
 │   │   ├── client-provider.tsx
 │   │   ├── config.ts
 │   │   ├── error-emitter.ts

@@ -29,17 +29,27 @@ Siga estas instruções para configurar e rodar o projeto em seu ambiente de des
     ```bash
     npm install
     ```
+3.  **Configure o Firebase:**
+    Para que o aplicativo se conecte ao Firebase, você precisa criar um projeto e adicionar as chaves de configuração.
 
-3.  **Configure as Variáveis de Ambiente:**
-    Crie um arquivo chamado `.env.local` na raiz do projeto, copiando o conteúdo do arquivo `src/firebase/config.ts`. Este arquivo conterá as chaves de configuração do seu projeto Firebase. O conteúdo deve ser algo como:
+    **a. Crie e Configure seu Projeto no Firebase:**
+    - Acesse o [Console do Firebase](https://console.firebase.google.com/) e crie um novo projeto.
+    - No seu projeto, vá para **Authentication**, clique em **Começar** e ative o provedor de login do **Google**.
+    - Em seguida, vá para **Firestore Database**, clique em **Criar banco de dados**, inicie em **modo de produção** e escolha um local para o seu servidor.
 
-    ```
-    NEXT_PUBLIC_FIREBASE_API_KEY="AIzaSy...CyM"
-    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="studio-....firebaseapp.com"
-    NEXT_PUBLIC_FIREBASE_PROJECT_ID="studio-....-9e90f"
-    NEXT_PUBLIC_FIREBASE_APP_ID="1:40...:web:bf7..."
-    ```
-    *É crucial que você adicione o prefixo `NEXT_PUBLIC_` a cada chave para que elas sejam acessíveis no lado do cliente no Next.js.*
+    **b. Obtenha as Chaves de Configuração:**
+    - Na página principal do seu projeto, clique no ícone da Web (`</>`) para adicionar um novo aplicativo da Web.
+    - Dê um nome ao seu aplicativo e registre-o. O Firebase fornecerá um objeto de configuração.
+
+    **c. Adicione as Chaves ao Projeto:**
+    - No arquivo `src/firebase/config.ts`, substitua o objeto `firebaseConfig` existente pelo objeto que você copiou do Firebase.
+
+    **d. (MUITO IMPORTANTE) Autorize os Domínios de Acesso:**
+    - Para que o login com Google funcione (tanto localmente quanto em produção), você precisa autorizar os domínios que acessarão a autenticação.
+    - No Console do Firebase, vá para **Authentication** > **Settings**.
+    - Em **Domínios autorizados**, adicione os seguintes domínios:
+        - `localhost` (para desenvolvimento local)
+        - O domínio onde seu site está hospedado (ex: `todoperseu.netlify.app`)
 
 4.  **Rode o servidor de desenvolvimento:**
     Execute o comando abaixo para iniciar o aplicativo em modo de desenvolvimento.
@@ -118,6 +128,8 @@ Siga estas instruções para configurar e rodar o projeto em seu ambiente de des
 │   │   │   └── toaster.tsx
 │   │   └── user-auth.tsx
 │   ├── firebase
+│   │   ├── auth
+│   │   │   └── handle-redirect.ts
 │   │   ├── client-provider.tsx
 │   │   ├── config.ts
 │   │   ├── error-emitter.ts
