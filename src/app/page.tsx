@@ -6,99 +6,79 @@ import { AddTaskForm } from "@/components/add-task-form";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { Separator } from "@/components/ui/separator";
-
-const initialTasks: Task[] = [
-  {
-    id: "1",
-    title: "Configurar a estrutura do projeto",
-    description: "Inicializar o aplicativo Next.js e instalar dependências.",
-    completed: true,
-    category: "Trabalho",
-  },
-  {
-    id: "2",
-    title: "Projetar a interface do usuário",
-    description: "Criar mockups e escolher uma paleta de cores.",
-    completed: true,
-    category: "Trabalho",
-  },
-  {
-    id: "3",
-    title: "Desenvolver componentes principais",
-    description: "Construir os componentes TaskCard, TaskList e AddTaskForm.",
-    completed: false,
-    category: "Trabalho",
-  },
-  {
-    id: "4",
-    title: "Integrar sugestões de IA",
-    description: "Implementar o recurso GenAI para sugestões de nomes de tarefas.",
-    completed: false,
-    category: "Estudo",
-  },
-  {
-    id: "5",
-    title: "Comprar leite",
-    description: "",
-    completed: false,
-    category: "Compras",
-  },
-  {
-    id: "6",
-    title: "Ligar para o médico",
-    description: "Agendar consulta de rotina",
-    completed: false,
-    category: "Recados",
-  },
-  {
-    id: "7",
-    title: "Fazer exercícios",
-    description: "30 minutos de corrida",
-    completed: false,
-    category: "Pessoal",
-  },
-];
+import { useFirebase } from "@/firebase";
+import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { useCollection } from "@/firebase/firestore/use-collection";
+import {
+  addDocumentNonBlocking,
+  updateDocumentNonBlocking,
+  deleteDocumentNonBlocking,
+} from "@/firebase/non-blocking-updates";
+import { useMemoFirebase } from "@/firebase/provider";
+import { initiateAnonymousSignIn } from "@/firebase/non-blocking-login";
+import { Button } from "@/components/ui/button";
 
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const { auth, firestore, user, isUserLoading } = useFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const handleAddTask = (taskData: Omit<Task, "id" | "completed">) => {
-    const newTask: Task = {
+  const tasksCollection = useMemoFirebase(() => {
+    if (!user) return null;
+    return collection(firestore, "users", user.uid, "tasks");
+  }, [firestore, user]);
+
+  const { data: tasks, isLoading: isLoadingTasks } = useCollection<Task>(tasksCollection);
+
+  const handleAddTask = (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => {
+    if (!tasksCollection || !user) return;
+    const newTask = {
       ...taskData,
-      id: Date.now().toString(),
-      completed: false,
+      isCompleted: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      userId: user.uid,
     };
-    setTasks((prevTasks) => [newTask, ...prevTasks]);
+    addDocumentNonBlocking(tasksCollection, newTask);
   };
 
   const handleToggleComplete = (taskId: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
+    if (!tasksCollection) return;
+    const task = tasks?.find((t) => t.id === taskId);
+    if (task) {
+      const taskRef = doc(tasksCollection, taskId);
+      updateDocumentNonBlocking(taskRef, {
+        isCompleted: !task.isCompleted,
+        updatedAt: serverTimestamp(),
+      });
+    }
   };
 
   const handleDeleteTask = (taskId: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    if (!tasksCollection) return;
+    const taskRef = doc(tasksCollection, taskId);
+    deleteDocumentNonBlocking(taskRef);
   };
 
   const handleSaveTask = (updatedTask: Task) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      )
-    );
+    if (!tasksCollection) return;
+    const taskRef = doc(tasksCollection, updatedTask.id);
+    const { id, ...taskToUpdate } = updatedTask;
+    updateDocumentNonBlocking(taskRef, {
+      ...taskToUpdate,
+      updatedAt: serverTimestamp(),
+    });
     setEditingTask(null);
   };
 
   const { pendingTasksByCategory, completedTasks } = useMemo(() => {
+    if (!tasks) {
+      return { pendingTasksByCategory: {}, completedTasks: [] };
+    }
     return tasks.reduce(
       (acc, task) => {
-        if (task.completed) {
+        if (task.isCompleted) {
           acc.completedTasks.push(task);
         } else {
           if (!acc.pendingTasksByCategory[task.category]) {
@@ -108,9 +88,33 @@ export default function Home() {
         }
         return acc;
       },
-      { pendingTasksByCategory: {} as Record<string, Task[]>, completedTasks: [] as Task[] }
+      {
+        pendingTasksByCategory: {} as Record<string, Task[]>,
+        completedTasks: [] as Task[],
+      }
     );
   }, [tasks]);
+
+  if (isUserLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-3xl font-bold mb-4">Bem-vindo ao TaskFlow</h1>
+        <p className="mb-6">Faça login para gerenciar suas tarefas.</p>
+        <Button onClick={() => initiateAnonymousSignIn(auth)}>
+          Entrar como Anônimo
+        </Button>
+      </div>
+    );
+  }
+
 
   return (
     <main className="container mx-auto p-4 md:p-8">
@@ -127,21 +131,25 @@ export default function Home() {
         <AddTaskForm onAddTask={handleAddTask} />
 
         <Separator className="my-8" />
-        
+
         <section>
           <h2 className="font-headline text-3xl font-semibold mb-6">Pendentes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {taskCategories.map((category) => (
-              <TaskList
-                key={category}
-                title={category}
-                tasks={pendingTasksByCategory[category] || []}
-                onToggleComplete={handleToggleComplete}
-                onDelete={handleDeleteTask}
-                onEdit={setEditingTask}
-              />
-            ))}
-          </div>
+          {isLoadingTasks ? (
+             <div className="text-center">Carregando tarefas...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+              {taskCategories.map((category) => (
+                <TaskList
+                  key={category}
+                  title={category}
+                  tasks={pendingTasksByCategory[category] || []}
+                  onToggleComplete={handleToggleComplete}
+                  onDelete={handleDeleteTask}
+                  onEdit={setEditingTask}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
         <Separator className="my-8" />

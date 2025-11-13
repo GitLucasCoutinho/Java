@@ -24,23 +24,23 @@ export function TaskCard({
     <Card
       className={cn(
         "transition-all duration-300 hover:shadow-md",
-        task.completed ? "bg-card/50" : "bg-card"
+        task.isCompleted ? "bg-card/50" : "bg-card"
       )}
     >
       <CardContent className="p-4 flex items-start gap-4">
         <Checkbox
           id={`task-${task.id}`}
-          checked={task.completed}
+          checked={task.isCompleted}
           onCheckedChange={() => onToggleComplete(task.id)}
           className="mt-1"
-          aria-label={`Marcar tarefa "${task.title}" como ${task.completed ? 'incompleta' : 'completa'}`}
+          aria-label={`Marcar tarefa "${task.title}" como ${task.isCompleted ? 'incompleta' : 'completa'}`}
         />
         <div className="flex-1 grid gap-1">
           <label
             htmlFor={`task-${task.id}`}
             className={cn(
               "font-medium cursor-pointer transition-colors",
-              task.completed && "line-through text-muted-foreground"
+              task.isCompleted && "line-through text-muted-foreground"
             )}
           >
             {task.title}
@@ -49,7 +49,7 @@ export function TaskCard({
             <p
               className={cn(
                 "text-sm text-muted-foreground",
-                task.completed && "line-through"
+                task.isCompleted && "line-through"
               )}
             >
               {task.description}

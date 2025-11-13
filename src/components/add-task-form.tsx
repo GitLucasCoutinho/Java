@@ -19,7 +19,7 @@ const formSchema = z.object({
 });
 
 type AddTaskFormProps = {
-  onAddTask: (taskData: Omit<Task, "id" | "completed">) => void;
+  onAddTask: (taskData: Omit<Task, "id" | "isCompleted" | "userId">) => void;
 };
 
 const taskCategories = ["Pessoal", "Trabalho", "Compras", "Recados", "Estudo"];

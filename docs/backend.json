@@ -32,18 +32,20 @@
           "description": "Timestamp of when the task was last updated.",
           "format": "date-time"
         },
-        "suggestedTaskNameId": {
+        "category": {
           "type": "string",
-          "description": "Reference to SuggestedTaskName. (Relationship: SuggestedTaskName 1:N Task)"
+          "description": "The category of the task"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who owns the task."
         }
       },
       "required": [
-        "id",
         "title",
-        "description",
         "isCompleted",
-        "createdAt",
-        "updatedAt"
+        "category",
+        "userId"
       ]
     },
     "SuggestedTaskName": {
