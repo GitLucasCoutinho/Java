@@ -13,14 +13,20 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
-import { isSameDay } from "date-fns";
+import { isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, getDay, format } from "date-fns";
 import { ptBR } from 'date-fns/locale';
 import { Separator } from "@/components/ui/separator";
 import { AppLayout } from "@/components/app-layout";
 
+// Mapeia string de dia para número (0=Dom, 1=Seg, ...)
+const dayMap: { [key: string]: number } = {
+  'SUN': 0, 'MON': 1, 'TUE': 2, 'WED': 3, 'THU': 4, 'FRI': 5, 'SAT': 6
+};
+
 export default function CalendarPage() {
   const { firestore, user } = useFirebase();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const tasksCollection = useMemoFirebase(() => {
@@ -30,29 +36,50 @@ export default function CalendarPage() {
 
   const { data: tasks } = useCollection<Task>(tasksCollection);
 
-  // Memoiza as tarefas que têm datas
-  const tasksWithDates = useMemo(() => {
-    if (!tasks) return [];
-    return tasks.filter(task => task.startDate || task.endDate);
-  }, [tasks]);
+  const getTasksForDay = (day: Date, allTasks: Task[]) => {
+    return allTasks.filter(task => {
+      // Verifica tarefas com data de início
+      if (task.startDate) {
+        const taskDate = task.startDate instanceof Timestamp ? task.startDate.toDate() : new Date(task.startDate);
+        if (isSameDay(taskDate, day)) {
+          return true;
+        }
+      }
+      // Verifica tarefas recorrentes
+      if (task.recurringDays && task.recurringDays.length > 0) {
+        const dayOfWeek = getDay(day);
+        return task.recurringDays.some(recurringDay => dayMap[recurringDay] === dayOfWeek);
+      }
+      return false;
+    });
+  };
 
-  // Dias com tarefas para destacar no calendário
-  const daysWithTasks = useMemo(() => {
-    return tasksWithDates.map(task => {
-        const date = task.startDate || task.endDate;
-        if (!date) return null;
-        return date instanceof Timestamp ? date.toDate() : new Date(date);
-    }).filter((date): date is Date => date !== null);
-  }, [tasksWithDates]);
+  const { pendingDays, completedDays } = useMemo(() => {
+    if (!tasks) return { pendingDays: [], completedDays: [] };
 
-  // Filtra as tarefas para o dia selecionado
+    const pending: Date[] = [];
+    const completed: Date[] = [];
+    
+    const interval = { start: startOfMonth(currentMonth), end: endOfMonth(currentMonth) };
+    const daysInMonth = eachDayOfInterval(interval);
+
+    daysInMonth.forEach(day => {
+      const tasksForDay = getTasksForDay(day, tasks);
+      if (tasksForDay.length > 0) {
+        if (tasksForDay.every(t => t.isCompleted)) {
+          completed.push(day);
+        } else {
+          pending.push(day);
+        }
+      }
+    });
+
+    return { pendingDays: pending, completedDays: completed };
+  }, [tasks, currentMonth]);
+
   const tasksForSelectedDay = useMemo(() => {
     if (!selectedDate || !tasks) return [];
-    return tasks.filter(task => {
-      if (!task.startDate) return false;
-      const taskDate = task.startDate instanceof Timestamp ? task.startDate.toDate() : new Date(task.startDate);
-      return isSameDay(taskDate, selectedDate);
-    });
+    return getTasksForDay(selectedDate, tasks);
   }, [selectedDate, tasks]);
 
   const handleToggleComplete = async (taskId: string) => {
@@ -60,7 +87,7 @@ export default function CalendarPage() {
     const task = tasks?.find((t) => t.id === taskId);
     if (task) {
       const taskRef = doc(tasksCollection, taskId);
-      updateDoc(taskRef, {
+      await updateDoc(taskRef, {
         isCompleted: !task.isCompleted,
         updatedAt: serverTimestamp(),
       });
@@ -70,7 +97,7 @@ export default function CalendarPage() {
   const handleDeleteTask = async (taskId: string) => {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, taskId);
-    deleteDoc(taskRef);
+    await deleteDoc(taskRef);
   };
 
   const handleSaveTask = async (updatedTask: Task) => {
@@ -86,8 +113,26 @@ export default function CalendarPage() {
       recurringDays: updatedTask.recurringDays || [],
     };
 
-    updateDoc(taskRef, dataToUpdate);
+    await updateDoc(taskRef, dataToUpdate);
     setEditingTask(null);
+  };
+
+  const DayContent = ({ date }: { date: Date }) => {
+    const isPending = pendingDays.some(day => isSameDay(day, date));
+    const isCompleted = completedDays.some(day => isSameDay(day, date));
+    
+    let dotColor = '';
+    if (isPending) dotColor = 'bg-orange-500';
+    else if (isCompleted) dotColor = 'bg-green-500';
+
+    return (
+      <div className="relative h-full w-full flex items-center justify-center">
+        <span>{format(date, 'd')}</span>
+        {dotColor && (
+          <div className={`absolute bottom-1 h-1.5 w-1.5 rounded-full ${dotColor}`} />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -97,29 +142,20 @@ export default function CalendarPage() {
             mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}
+            month={currentMonth}
+            onMonthChange={setCurrentMonth}
             className="rounded-md border"
             locale={ptBR}
             modifiers={{
-                withTask: daysWithTasks,
+                pending: pendingDays,
+                completed: completedDays,
             }}
             modifiersStyles={{
-                withTask: { 
-                    position: 'relative',
-                    color: 'hsl(var(--primary))' 
-                }
+                pending: { color: 'var(--orange)' },
+                completed: { color: 'var(--green)' },
             }}
             components={{
-              DayContent: (props) => {
-                const isWithTask = daysWithTasks.some(day => isSameDay(day, props.date));
-                return (
-                  <div className="relative h-full w-full flex items-center justify-center">
-                    <span>{props.date.getDate()}</span>
-                    {isWithTask && (
-                      <div className="absolute bottom-1 h-1 w-1 rounded-full bg-primary" />
-                    )}
-                  </div>
-                );
-              },
+              DayContent: (props) => <DayContent date={props.date} />
             }}
           />
 
