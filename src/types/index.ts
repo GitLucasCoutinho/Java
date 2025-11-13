@@ -17,4 +17,5 @@ export type Task = {
   userId: string;                  // ID do usuário proprietário da tarefa.
   startDate?: FieldValue | Date;   // Data de início opcional.
   endDate?: FieldValue | Date;     // Data de término opcional.
+  recurringDays?: string[];        // Dias da semana para recorrência (ex: ['MON', 'WED']).
 };

@@ -10,7 +10,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import type { Task } from "@/types";
 import { useEffect } from "react";
+import { DaySelector } from "./day-selector";
 
 /**
  * Esquema de validação para o formulário de adicionar tarefa.
@@ -27,6 +28,7 @@ const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
+  recurringDays: z.array(z.string()).optional(),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
 });
@@ -54,6 +56,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
       title: "",
       description: "",
       category: defaultCategory || "Pessoal",
+      recurringDays: [],
     },
   });
 
@@ -72,6 +75,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
         title: values.title, 
         description: values.description || "", 
         category: values.category,
+        recurringDays: values.recurringDays,
         startDate: values.startDate,
         endDate: values.endDate,
     });
@@ -116,6 +120,22 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="recurringDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Repetir nos dias (Opcional)</FormLabel>
+                    <FormControl>
+                        <DaySelector value={field.value || []} onValueChange={field.onChange} />
+                    </FormControl>
+                  <FormDescription>
+                    Selecione os dias para tarefas recorrentes.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

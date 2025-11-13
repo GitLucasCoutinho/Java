@@ -7,7 +7,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Trash2, Pencil, CalendarIcon } from "lucide-react";
+import { Trash2, Pencil, CalendarIcon, Repeat } from "lucide-react";
 import type { Task } from "@/types";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -42,6 +42,10 @@ export function TaskCard({
 
   const startDate = formatDate(task.startDate);
   const endDate = formatDate(task.endDate);
+
+  const recurringDaysText = task.recurringDays && task.recurringDays.length > 0
+    ? task.recurringDays.join(', ')
+    : null;
   
   return (
     <Card
@@ -78,14 +82,22 @@ export function TaskCard({
               {task.description}
             </p>
           )}
-           {(startDate || endDate) && (
-            <div className={cn("text-xs text-muted-foreground flex items-center gap-1 mt-1", task.isCompleted && "line-through")}>
-              <CalendarIcon className="h-3 w-3" />
-              <span>{startDate}</span>
-              {startDate && endDate && <span> - </span>}
-              <span>{endDate}</span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
+            {(startDate || endDate) && (
+                <div className={cn("text-xs text-muted-foreground flex items-center gap-1", task.isCompleted && "line-through")}>
+                <CalendarIcon className="h-3 w-3" />
+                <span>{startDate}</span>
+                {startDate && endDate && <span> - </span>}
+                <span>{endDate}</span>
+                </div>
+            )}
+            {recurringDaysText && (
+                <div className={cn("text-xs text-muted-foreground flex items-center gap-1", task.isCompleted && "line-through")}>
+                    <Repeat className="h-3 w-3" />
+                    <span>{recurringDaysText}</span>
+                </div>
+            )}
+           </div>
         </div>
         <div className="flex gap-2">
           <Button

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -20,6 +20,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import type { Task } from "@/types";
+import { DaySelector } from "./day-selector";
 
 /**
  * Esquema de validação para o formulário de edição de tarefa.
@@ -28,6 +29,7 @@ const formSchema = z.object({
   title: z.string().min(2, "O título deve ter pelo menos 2 caracteres."),
   description: z.string().optional(),
   category: z.string().min(1, "Por favor, selecione uma categoria."),
+  recurringDays: z.array(z.string()).optional(),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
 });
@@ -56,6 +58,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
       title: "",
       description: "",
       category: "Pessoal",
+      recurringDays: [],
     },
   });
 
@@ -66,6 +69,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
         title: task.title,
         description: task.description,
         category: task.category,
+        recurringDays: task.recurringDays || [],
         startDate: task.startDate ? new Date(task.startDate as any) : undefined,
         endDate: task.endDate ? new Date(task.endDate as any) : undefined,
       });
@@ -83,6 +87,7 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
         title: values.title,
         description: values.description || "",
         category: values.category,
+        recurringDays: values.recurringDays,
         startDate: values.startDate,
         endDate: values.endDate,
       });
@@ -130,6 +135,22 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="recurringDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Repetir nos dias (Opcional)</FormLabel>
+                    <FormControl>
+                        <DaySelector value={field.value || []} onValueChange={field.onChange} />
+                    </FormControl>
+                  <FormDescription>
+                    Selecione os dias para tarefas recorrentes.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

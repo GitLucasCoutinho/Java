@@ -49,6 +49,13 @@
             "type": "string",
             "format": "date-time",
             "description": "A data de término opcional da tarefa."
+        },
+        "recurringDays": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Um array de strings representando os dias da semana em que a tarefa se repete."
         }
       },
       "required": [

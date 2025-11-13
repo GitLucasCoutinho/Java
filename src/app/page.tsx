@@ -51,17 +51,26 @@ export default function Home() {
    */
   const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId" | "category"> & { category?: string }) => {
     if (!tasksCollection || !user) return;
-    const newTask = {
+    const newTask: Partial<Task> = {
       ...taskData,
       isCompleted: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       userId: user.uid,
       category: taskData.category || "Pessoal", // Categoria padrão
-      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : undefined,
-      endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : undefined,
     };
-    addDoc(tasksCollection, newTask);
+    
+    if (taskData.startDate) {
+      newTask.startDate = Timestamp.fromDate(new Date(taskData.startDate));
+    }
+    if (taskData.endDate) {
+      newTask.endDate = Timestamp.fromDate(new Date(taskData.endDate));
+    }
+    if (taskData.recurringDays) {
+        newTask.recurringDays = taskData.recurringDays;
+    }
+
+    addDoc(tasksCollection, newTask as Task);
     setAddTaskSheetOpen(false);
   };
 
@@ -105,6 +114,7 @@ export default function Home() {
         updatedAt: serverTimestamp(),
         startDate: updatedTask.startDate ? Timestamp.fromDate(new Date(updatedTask.startDate)) : null,
         endDate: updatedTask.endDate ? Timestamp.fromDate(new Date(updatedTask.endDate)) : null,
+        recurringDays: updatedTask.recurringDays || [],
     };
 
 
