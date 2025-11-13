@@ -51,26 +51,20 @@ export default function Home() {
    */
   const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId" | "category"> & { category?: string }) => {
     if (!tasksCollection || !user) return;
-    const newTask: Partial<Task> = {
-      ...taskData,
+    const newTask: Omit<Task, 'id'> = {
+      title: taskData.title,
+      description: taskData.description || '',
       isCompleted: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       userId: user.uid,
-      category: taskData.category || "Pessoal", // Categoria padrão
+      category: taskData.category || "Pessoal",
+      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : null,
+      endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : null,
+      recurringDays: taskData.recurringDays || [],
     };
-    
-    if (taskData.startDate) {
-      newTask.startDate = Timestamp.fromDate(new Date(taskData.startDate));
-    }
-    if (taskData.endDate) {
-      newTask.endDate = Timestamp.fromDate(new Date(taskData.endDate));
-    }
-    if (taskData.recurringDays) {
-        newTask.recurringDays = taskData.recurringDays;
-    }
 
-    addDoc(tasksCollection, newTask as Task);
+    addDoc(tasksCollection, newTask);
     setAddTaskSheetOpen(false);
   };
 
