@@ -8,7 +8,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Calendar, Plus, ListTodo, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetDescription } from '@/components/ui/sheet';
 import { AddTaskForm } from '@/components/add-task-form';
 import { UserAuth } from '@/components/user-auth';
 import { useFirebase } from '@/firebase';
@@ -111,6 +111,9 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
           <SheetContent side="bottom" className="rounded-t-lg max-h-[90vh] overflow-y-auto">
             <SheetHeader className="text-left mb-6">
               <SheetTitle>Adicionar Nova Tarefa</SheetTitle>
+              <SheetDescription>
+                Preencha os detalhes abaixo para criar uma nova tarefa na sua lista.
+              </SheetDescription>
             </SheetHeader>
             <AddTaskForm onAddTask={handleAddTask} onDone={() => setAddTaskSheetOpen(false)} />
           </SheetContent>
