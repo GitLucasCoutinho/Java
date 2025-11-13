@@ -146,7 +146,11 @@ export function EditTaskDialog({ task, isOpen, onClose, onSave }: EditTaskDialog
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea className="resize-none" {...field} />
+                    <Textarea 
+                        className="resize-none" 
+                        {...field}
+                        value={field.value ?? ''}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

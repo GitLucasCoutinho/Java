@@ -124,7 +124,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
                 </FormItem>
               )}
             />
-            <FormField
+             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
@@ -135,6 +135,7 @@ export function AddTaskForm({ onAddTask, onDone, defaultCategory }: AddTaskFormP
                       placeholder="Adicione mais detalhes sobre a tarefa..."
                       className="resize-none"
                       {...field}
+                      value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
