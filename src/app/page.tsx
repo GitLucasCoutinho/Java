@@ -7,7 +7,8 @@ import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { Separator } from "@/components/ui/separator";
 import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc, signInAnonymously, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/firestore";
+import { collection, doc, serverTimestamp, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { signInAnonymously, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { Button } from "@/components/ui/button";
@@ -41,7 +42,7 @@ export default function Home() {
       updatedAt: serverTimestamp(),
       userId: user.uid,
     };
-    await addDoc(tasksCollection, newTask);
+    addDoc(tasksCollection, newTask);
   };
 
   const handleToggleComplete = async (taskId: string) => {
@@ -49,7 +50,7 @@ export default function Home() {
     const task = tasks?.find((t) => t.id === taskId);
     if (task) {
       const taskRef = doc(tasksCollection, taskId);
-      await updateDoc(taskRef, {
+      updateDoc(taskRef, {
         isCompleted: !task.isCompleted,
         updatedAt: serverTimestamp(),
       });
@@ -59,14 +60,14 @@ export default function Home() {
   const handleDeleteTask = async (taskId: string) => {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, taskId);
-    await deleteDoc(taskRef);
+    deleteDoc(taskRef);
   };
 
   const handleSaveTask = async (updatedTask: Task) => {
     if (!tasksCollection) return;
     const taskRef = doc(tasksCollection, updatedTask.id);
     const { id, ...taskToUpdate } = updatedTask;
-    await updateDoc(taskRef, {
+    updateDoc(taskRef, {
       ...taskToUpdate,
       updatedAt: serverTimestamp(),
     });
