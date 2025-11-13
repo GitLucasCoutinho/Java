@@ -6,6 +6,8 @@
  */
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   GoogleAuthProvider,
   signInWithRedirect,
@@ -30,6 +32,16 @@ import { LogOut, User } from "lucide-react";
  */
 export function UserAuth() {
   const { user, auth } = useFirebase();
+  const router = useRouter();
+
+  // Força a revalidação da página quando o estado do usuário muda.
+  // Isso é crucial para corrigir problemas de cache do Next.js com o redirecionamento do Firebase.
+  useEffect(() => {
+    if (user) {
+      router.refresh();
+    }
+  }, [user, router]);
+
 
   /**
    * Inicia o fluxo de login com o Google usando redirecionamento.
