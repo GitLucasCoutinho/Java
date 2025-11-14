@@ -5,15 +5,11 @@
  */
 'use client';
 
-import React, { useMemo, type ReactNode } from 'react';
+import React, { useMemo, type ReactNode, useEffect } from 'react';
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
 import { handleRedirect } from './auth/handle-redirect';
 
-// Lida com o resultado do redirecionamento de login do Firebase.
-// Chamar esta função aqui garante que o resultado seja processado
-// o mais cedo possível no ciclo de vida do aplicativo no cliente.
-handleRedirect();
 
 /**
  * Propriedades para o FirebaseClientProvider.
@@ -33,6 +29,14 @@ export function FirebaseClientProvider({ children }: FirebaseClientProviderProps
   const firebaseServices = useMemo(() => {
     return initializeFirebase();
   }, []); // O array vazio garante que a função só seja executada na montagem inicial.
+
+  // O useEffect garante que `handleRedirect` seja chamado no lado do cliente após a inicialização.
+  useEffect(() => {
+    // Lida com o resultado do redirecionamento de login do Firebase.
+    // Chamar esta função aqui garante que o resultado seja processado
+    // o mais cedo possível no ciclo de vida do aplicativo no cliente, após a inicialização.
+    handleRedirect();
+  }, [firebaseServices]); // Depende dos serviços para garantir a ordem.
 
   return (
     <FirebaseProvider

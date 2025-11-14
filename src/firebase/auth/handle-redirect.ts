@@ -6,12 +6,7 @@
  */
 'use client';
 
-import { getRedirectResult, type UserCredential } from 'firebase/auth';
-import { initializeFirebase } from '@/firebase';
-
-// Uma promessa que resolve com as credenciais do usuário ou nulo.
-// Isso armazena o resultado para que não precisemos chamar getRedirectResult várias vezes.
-let redirectResultPromise: Promise<UserCredential | null> | null = null;
+import { getAuth, getRedirectResult, type UserCredential } from 'firebase/auth';
 
 /**
  * Inicia o processo de obtenção do resultado do redirecionamento do Firebase Auth.
@@ -19,11 +14,7 @@ let redirectResultPromise: Promise<UserCredential | null> | null = null;
  * do seu aplicativo (por exemplo, no layout raiz). Ela garante que a chamada para
  * `getRedirectResult` aconteça apenas uma vez.
  */
-export function handleRedirect(): void {
-  if (typeof window !== 'undefined' && !redirectResultPromise) {
-    // Inicializa o Firebase para garantir que a instância de autenticação esteja disponível.
-    const { auth } = initializeFirebase();
-    // Chama getRedirectResult e armazena a promessa.
-    redirectResultPromise = getRedirectResult(auth);
-  }
+export function handleRedirect(): Promise<UserCredential | null> {
+  const auth = getAuth();
+  return getRedirectResult(auth);
 }
