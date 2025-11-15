@@ -10,7 +10,7 @@ import type { Task } from "@/types";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
 import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp, FieldValue } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
@@ -61,6 +61,19 @@ export default function Home() {
     deleteDoc(taskRef);
   };
 
+  // Helper para garantir que o valor é uma Date ou null, lidando com FieldValue e Timestamps.
+  const getSafeDate = (value: FieldValue | Date | Timestamp | undefined | null): Date | null => {
+    if (value instanceof Date) {
+      return value;
+    }
+    // Se for um objeto do tipo Timestamp do Firestore (que tem um método toDate())
+    if (value && typeof value === 'object' && 'toDate' in value && typeof (value as Timestamp).toDate === 'function') {
+      return (value as Timestamp).toDate();
+    }
+    // Para FieldValue ou outros tipos que não podem ser convertidos diretamente para Date, retorne null.
+    return null;
+  };
+
   /**
    * Salva as alterações de uma tarefa editada.
    * @param {Task} updatedTask - A tarefa com os dados atualizados.
@@ -70,14 +83,18 @@ export default function Home() {
     const taskRef = doc(tasksCollection, updatedTask.id);
     const { id, ...taskToUpdate } = updatedTask;
 
+    const safeStartDate = getSafeDate(updatedTask.startDate);
+    const safeEndDate = getSafeDate(updatedTask.endDate);
+
     const dataToUpdate: any = {
         ...taskToUpdate,
         updatedAt: serverTimestamp(),
-        startDate: updatedTask.startDate ? Timestamp.fromDate(new Date(updatedTask.startDate)) : null,
-        endDate: updatedTask.endDate ? Timestamp.fromDate(new Date(updatedTask.endDate)) : null,
+        // Garante que startDate seja um Timestamp ou null
+        startDate: safeStartDate ? Timestamp.fromDate(safeStartDate) : null,
+        // Garante que endDate seja um Timestamp ou null
+        endDate: safeEndDate ? Timestamp.fromDate(safeEndDate) : null,
         recurringDays: updatedTask.recurringDays || [],
     };
-
 
     updateDoc(taskRef, dataToUpdate);
     setEditingTask(null);
