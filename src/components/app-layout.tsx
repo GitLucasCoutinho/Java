@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { AddTaskForm } from '@/components/add-task-form';
 import { UserAuth } from '@/components/user-auth';
-import { useFirebase } from '@/firebase';
-import { addDoc, collection, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { useMemoFirebase } from '@/firebase';
+import { addDoc, collection, serverTimestamp, Timestamp, FieldValue } from 'firebase/firestore';
 import type { Task } from '@/types';
 import { TaskSquareIcon } from './icons';
 import { usePathname } from 'next/navigation';
@@ -24,14 +24,26 @@ type AppLayoutProps = {
 };
 
 export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
-  const { firestore, user } = useFirebase();
+  const { firestore, user } = useMemoFirebase();
   const [isAddTaskSheetOpen, setAddTaskSheetOpen] = useState(false);
   const pathname = usePathname();
   const isHomePage = pathname === '/';
 
-  const handleAddTask = async (taskData: Omit<Task, "id" | "isCompleted" | "userId" | "category"> & { category?: string }) => {
+  const handleAddTask = async (taskData: Omit<Task, 'id' | 'isCompleted' | 'userId' | 'category'> & { category?: string }) => {
     if (!user) return;
-    const tasksCollection = collection(firestore, "users", user.uid, "tasks");
+
+    const toJsDate = (dateValue: FieldValue | Date | undefined): Date | undefined => {
+        if (!dateValue) return undefined;
+        if (dateValue instanceof Timestamp) {
+            return dateValue.toDate();
+        }
+        return new Date(dateValue as Date);
+    };
+
+    const startDate = toJsDate(taskData.startDate as FieldValue | Date | undefined);
+    const endDate = toJsDate(taskData.endDate as FieldValue | Date | undefined);
+
+    const tasksCollection = collection(firestore, 'users', user.uid, 'tasks');
     const newTask: Omit<Task, 'id'> = {
       title: taskData.title,
       description: taskData.description || '',
@@ -39,9 +51,9 @@ export function AppLayout({ children, pageTitle, pageIcon }: AppLayoutProps) {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       userId: user.uid,
-      category: taskData.category || "Pessoal",
-      startDate: taskData.startDate ? Timestamp.fromDate(new Date(taskData.startDate)) : Timestamp.fromDate(new Date()),
-      endDate: taskData.endDate ? Timestamp.fromDate(new Date(taskData.endDate)) : null,
+      category: taskData.category || 'Pessoal',
+      startDate: startDate ? Timestamp.fromDate(startDate) : Timestamp.fromDate(new Date()),
+      endDate: endDate ? Timestamp.fromDate(endDate) : undefined,
       recurringDays: taskData.recurringDays || [],
     };
 

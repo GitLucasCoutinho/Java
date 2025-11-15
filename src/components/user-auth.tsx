@@ -10,10 +10,10 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { useFirebase } from "@/firebase";
+import { useMemoFirebase } from "@/firebase";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "@/components/icons";
 import {
@@ -31,7 +31,7 @@ import { LogOut, User } from "lucide-react";
  * Componente que lida com a interface de autenticação do usuário.
  */
 export function UserAuth() {
-  const { user, auth } = useFirebase();
+  const { user, auth } = useMemoFirebase();
   const router = useRouter();
 
   // Força a revalidação da página quando o estado do usuário muda.
@@ -42,14 +42,15 @@ export function UserAuth() {
     }
   }, [user, router]);
 
-
   /**
-   * Inicia o fluxo de login com o Google usando redirecionamento.
+   * Inicia o fluxo de login com o Google usando um pop-up.
    */
   const handleGoogleSignIn = () => {
     if (!auth) return;
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider);
+    // Adiciona um parâmetro para forçar a seleção da conta.
+    provider.setCustomParameters({ prompt: 'select_account' });
+    signInWithPopup(auth, provider);
   };
 
   /**
@@ -72,35 +73,35 @@ export function UserAuth() {
 
   // Define a inicial do usuário para o Avatar de fallback.
   const userInitial = user.displayName ? user.displayName.charAt(0) : <User className="h-4 w-4" />;
-  
+
   // Se o usuário estiver logado, exibe o menu dropdown com suas informações.
   return (
     <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? ""} />
-                    <AvatarFallback>{userInitial}</AvatarFallback>
-                </Avatar>
-            </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">
-                {user.displayName}
-                </p>
-                <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
-                </p>
-            </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Sair</span>
-            </DropdownMenuItem>
-        </DropdownMenuContent>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user.photoURL ?? ""} alt={user.displayName ?? ""} />
+            <AvatarFallback>{userInitial}</AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">
+              {user.displayName}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sair</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

@@ -42,7 +42,7 @@ export function initializeFirebase() {
 
 // Re-exporta os provedores, hooks e utilitários para fácil importação em outros lugares.
 export * from './provider';
-export * from './client-provider';
+export * from './client-provider'; // Certificando-se que está exportado
 export * from './firestore/use-collection';
 export * from './firestore/use-doc';
 export * from './errors';

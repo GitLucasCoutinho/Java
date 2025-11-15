@@ -9,10 +9,9 @@ import { useState, useMemo } from "react";
 import type { Task } from "@/types";
 import { TaskList } from "@/components/task-list";
 import { EditTaskDialog } from "@/components/edit-task-dialog";
-import { useFirebase } from "@/firebase";
-import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
+import { useMemoFirebase } from "@/firebase";
+import { collection, doc, serverTimestamp, updateDoc, deleteDoc, Timestamp, FieldValue } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
-import { useMemoFirebase } from "@/firebase/provider";
 import { UserAuth } from "@/components/user-auth";
 import { TaskSquareIcon } from "@/components/icons";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,11 +22,11 @@ import { AppLayout } from "@/components/app-layout";
  * Componente da página inicial que renderiza a aplicação principal de lista de tarefas.
  */
 export default function Home() {
-  const { firestore, user } = useFirebase();
+  const { firestore, user } = useMemoFirebase();
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   // Memoiza a referência da coleção de tarefas do usuário no Firestore.
-  const tasksCollection = useMemoFirebase(() => {
+  const tasksCollection = useMemo(() => {
     if (!user) return null;
     return collection(firestore, "users", user.uid, "tasks");
   }, [firestore, user]);
@@ -70,11 +69,22 @@ export default function Home() {
     const taskRef = doc(tasksCollection, updatedTask.id);
     const { id, ...taskToUpdate } = updatedTask;
 
+    const toJsDate = (dateValue: FieldValue | Date | undefined): Date | undefined => {
+      if (!dateValue) return undefined;
+      if (dateValue instanceof Timestamp) {
+        return dateValue.toDate();
+      }
+      return new Date(dateValue as Date);
+    };
+
+    const startDate = toJsDate(updatedTask.startDate as FieldValue | Date | undefined);
+    const endDate = toJsDate(updatedTask.endDate as FieldValue | Date | undefined);
+
     const dataToUpdate: any = {
         ...taskToUpdate,
         updatedAt: serverTimestamp(),
-        startDate: updatedTask.startDate ? Timestamp.fromDate(new Date(updatedTask.startDate)) : null,
-        endDate: updatedTask.endDate ? Timestamp.fromDate(new Date(updatedTask.endDate)) : null,
+        startDate: startDate ? Timestamp.fromDate(startDate) : undefined,
+        endDate: endDate ? Timestamp.fromDate(endDate) : undefined,
         recurringDays: updatedTask.recurringDays || [],
     };
 
