@@ -1,51 +1,124 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainOperadoresDeAtribuicaoELogicos {
+
+    static final String APP_NAME = "Fundamentos Java";
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("=== " + APP_NAME + " ===");
 
-        // Pergunta a idade
+        try (Scanner scanner = new Scanner(System.in)) {
+            entradaDados(scanner);
+            estruturasCondicionais(20); // exemplo com idade fixa
+            estruturasRepeticao();
+            trabalharArrays();
+            trabalharColecoes();
+            usarMetodos();
+            operadoresLogicos();
+        }
+    }
+
+    // ===================== TÓPICO 1: Entrada de dados =====================
+    public static void entradaDados(Scanner scanner) {
+        System.out.println("\n--- Entrada de dados ---");
         System.out.print("Quantos anos você tem? ");
-        int age = scanner.nextInt();
+        int idade = scanner.nextInt();
+        scanner.nextLine(); // consome quebra de linha
 
-        // Pergunta se é emancipado
-        System.out.print("Você é emancipado? (true/false) ");
-        boolean isEmancipated = scanner.nextBoolean();
+        System.out.print("Você é emancipado? (sim/nao) ");
+        String resposta = scanner.nextLine().trim().toLowerCase();
+        boolean emancipado = resposta.equals("sim");
 
-        // Regra: pode dirigir se tiver 18 anos ou mais,
-        // ou se for emancipado e tiver pelo menos 16 anos
-        boolean canDrive = age >= 18 || (isEmancipated && age >= 16);
+        boolean podeDirigir = idade >= 18 || (emancipado && idade >= 16);
 
-        // Exibe o resultado formatado
-        System.out.printf("Você pode dirigir? (%s)%n", canDrive);
+        if (podeDirigir) {
+            System.out.println("✅ Sim, você pode dirigir.");
+        } else {
+            System.out.println("❌ Não, você não pode dirigir.");
+        }
+    }
 
+    // ===================== TÓPICO 2: Estruturas condicionais =====================
+    public static void estruturasCondicionais(int idade) {
+        System.out.println("\n--- Estruturas condicionais ---");
+        if (idade >= 18) {
+            System.out.println("Você é maior de idade.");
+        } else {
+            System.out.println("Você é menor de idade.");
+        }
+    }
 
-        System.out.println("=====================================");
-        System.out.println("=====================================");
+    // ===================== TÓPICO 3: Estruturas de repetição =====================
+    public static void estruturasRepeticao() {
+        System.out.println("\n--- Estruturas de repetição ---");
 
-        // Operador lógico AND (&&)
+        System.out.print("Contagem (for): ");
+        for (int i = 1; i <= 5; i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
+        int contador = 0;
+        while (contador < 3) {
+            System.out.println("Loop while: " + contador);
+            contador++;
+        }
+    }
+
+    // ===================== TÓPICO 4: Arrays =====================
+    public static void trabalharArrays() {
+        System.out.println("\n--- Arrays ---");
+        int[] numeros = {1, 2, 3, 4, 5};
+        System.out.println("Primeiro número do array: " + numeros[0]);
+    }
+
+    // ===================== TÓPICO 5: Coleções =====================
+    public static void trabalharColecoes() {
+        System.out.println("\n--- Coleções (List) ---");
+        List<String> nomes = new ArrayList<>();
+        nomes.add("Lucas");
+        nomes.add("Maria");
+        nomes.add("João");
+
+        for (String nome : nomes) {
+            System.out.println("- " + nome);
+        }
+    }
+
+    // ===================== TÓPICO 6: Métodos =====================
+    public static void usarMetodos() {
+        System.out.println("\n--- Métodos ---");
+        int resultado = soma(10, 20);
+        System.out.println("Resultado da soma: " + resultado);
+    }
+
+    public static int soma(int a, int b) {
+        return a + b;
+    }
+
+    // ===================== TÓPICO 7: Operadores lógicos =====================
+    public static void operadoresLogicos() {
+        System.out.println("\n--- Operadores lógicos ---");
+
         System.out.printf("true && true = %s%n", true && true);
         System.out.printf("false && false = %s%n", false && false);
         System.out.printf("true && false = %s%n", true && false);
         System.out.printf("false && true = %s%n", false && true);
 
-        System.out.println("=====================================");
+        System.out.println("-------------------------------------");
 
-        // Operador lógico OR (||)
         System.out.printf("true || true = %s%n", true || true);
         System.out.printf("false || false = %s%n", false || false);
         System.out.printf("true || false = %s%n", true || false);
         System.out.printf("false || true = %s%n", false || true);
 
-        System.out.println("=====================================");
+        System.out.println("-------------------------------------");
 
-        // Operador bitwise OR (|)
         System.out.printf("true | true = %s%n", true | true);
         System.out.printf("true | false = %s%n", true | false);
         System.out.printf("false | true = %s%n", false | true);
         System.out.printf("false | false = %s%n", false | false);
-
-        System.out.println("=====================================");
-
     }
 }
