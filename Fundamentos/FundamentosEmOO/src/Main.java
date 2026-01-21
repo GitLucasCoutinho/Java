@@ -1,5 +1,5 @@
-import exemplos.ExemplosBasicos;
-import exemplos.Pessoa;
+package exemplos;
+
 import java.util.Scanner;
 
 public class Main {
@@ -12,6 +12,9 @@ public class Main {
         ExemplosBasicos.mostrarColecoes();
         ExemplosBasicos.mostrarMetodos();
         ExemplosBasicos.mostrarOperadoresLogicos();
+
+        // Chamada do novo exemplo de switch
+        ExemplosBasicos.mostrarSwitchComYield(2);
     }
 
     // Método separado para entrada de dados

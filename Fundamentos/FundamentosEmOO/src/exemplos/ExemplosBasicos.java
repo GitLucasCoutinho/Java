@@ -63,4 +63,21 @@ public class ExemplosBasicos {
         System.out.printf("true || false = %s%n", true || false);
         System.out.printf("true | false = %s%n", true | false);
     }
+
+    // 🔥 exemplo de switch com arrow e yield
+    public static void mostrarSwitchComYield(int dia) {
+        System.out.println("\n--- Switch com arrow e yield ---");
+
+        String resultado = switch (dia) {
+            case 1 -> "Segunda";
+            case 2 -> {
+                System.out.println("Executando bloco com mais de uma linha...");
+                yield "Terça";
+            }
+            case 3 -> "Quarta";
+            default -> "Outro dia";
+        };
+
+        System.out.println("Resultado do switch: " + resultado);
+    }
 }
