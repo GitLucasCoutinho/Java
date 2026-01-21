@@ -1,7 +1,0 @@
-# Define as configurações para o backend do Firebase App Hosting.
-# Para mais detalhes, consulte: https://firebase.google.com/docs/app-hosting/configure
-
-runConfig:
-  # O número máximo de instâncias de servidor que podem ser executadas simultaneamente.
-  # Aumente este valor para escalar automaticamente em resposta a um aumento de tráfego.
-  maxInstances: 1
