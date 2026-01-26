@@ -23,14 +23,44 @@ Este projeto fornece uma API simples e open source para testar integrações e f
 
 ---
 
-## ▶️ Como executar
-
-### 1️⃣ Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/ms-simulador-pix.git
-cd ms-simulador-pix
+ms-simulador-pix/
+ ├── Dockerfile                  # Configuração para rodar em container
+ ├── pom.xml                     # Dependências Maven
+ ├── src/
+ │   └── main/
+ │       ├── java/com/ocooldev/pix/ms_simulador_pix/
+ │       │    ├── MsSimuladorPixApplication.java
+ │       │    ├── domain/
+ │       │    │    ├── model/
+ │       │    │    │    ├── PixTransaction.java
+ │       │    │    │    ├── Calendario.java
+ │       │    │    │    ├── Valor.java
+ │       │    │    │    ├── Horario.java
+ │       │    │    │    ├── InfoAdicional.java
+ │       │    │    │    ├── PixParcelado.java
+ │       │    │    │    ├── Parcela.java
+ │       │    │    │    └── Devolucao.java
+ │       │    │    └── service/
+ │       │    │         ├── PixService.java
+ │       │    │         ├── PixParceladoService.java
+ │       │    │         ├── DevolucaoService.java
+ │       │    │         └── WebhookService.java
+ │       │    └── infrastructure/
+ │       │         ├── repository/
+ │       │         │    ├── PixTransactionRepository.java
+ │       │         │    ├── PixParceladoRepository.java
+ │       │         │    └── DevolucaoRepository.java
+ │       │         └── controller/
+ │       │              ├── PixController.java
+ │       │              ├── PixParceladoController.java
+ │       │              ├── PixDevolucaoController.java
+ │       │              └── WebhookController.java
+ │       └── resources/
+ │            ├── application.yaml   # Configurações Spring Boot
+ │            └── logback-spring.xml # Configuração de logs (opcional)
 ```
-2️⃣ Compile e execute com Maven
+ Compile e execute com Maven
 ```bash
 mvn clean install
 mvn spring-boot:run
@@ -39,7 +69,7 @@ mvn spring-boot:run
 A aplicação estará disponível em:
 👉 http://localhost:8080
 
-3️⃣ Rodar os testes
+ Rodar os testes
 ```bash
 mvn test
 ```
@@ -134,6 +164,8 @@ Response
   "key": "teste@pix.com",
   "valid": true
 }
+
+
 ```
 📚 Documentação com Swagger / OpenAPI
 
@@ -147,3 +179,4 @@ Response
 
     Este projeto é open source sob a licença MIT.
 Sinta-se livre para usar, modificar e contribuir! 🎉
+

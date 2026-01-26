@@ -1,8 +1,7 @@
-package com.ocooldev.pix.ms_simulador_pix.model;
+package com.ocooldev.pix.ms_simulador_pix.domain.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Embeddable
@@ -11,5 +10,5 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Horario {
-    private LocalDateTime liquidacao;
+    private LocalDateTime liquidacao; // Data/hora da liquidação
 }

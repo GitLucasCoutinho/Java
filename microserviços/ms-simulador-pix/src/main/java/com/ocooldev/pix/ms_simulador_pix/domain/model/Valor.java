@@ -1,4 +1,4 @@
-package com.ocooldev.pix.ms_simulador_pix.model;
+package com.ocooldev.pix.ms_simulador_pix.domain.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.*;
@@ -9,6 +9,5 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Valor {
-    private String original; // valor em string, ex: "100.00"
-
+    private String original; // Valor em string, ex: "100.00"
 }
