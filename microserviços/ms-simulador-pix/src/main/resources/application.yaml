@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: ms-simulador-pix
+
+  datasource:
+    url: jdbc:h2:mem:pixdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # cria/atualiza tabelas automaticamente
+    show-sql: true       # exibe SQL no console
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080   # porta do microserviço
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
