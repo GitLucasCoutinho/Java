@@ -59,7 +59,45 @@ ms-simulador-pix/
  │       └── resources/
  │            ├── application.yaml   # Configurações Spring Boot
  │            └── logback-spring.xml # Configuração de logs (opcional)
+  
 ```
+Entenda a estrutura do projeto
+- pom.xml — dependências, plugins (procure spring-boot-maven-plugin e Jib se existir).
+- src/main/java — pacotes principais; abra o pacote raiz e identifique:
+- Application (classe com @SpringBootApplication) — ponto de entrada.
+- controller — endpoints REST; comece por aqui para ver rotas e métodos HTTP.
+- service — lógica de negócio; onde a simulação é implementada.
+- model / dto — classes de request/response e entidades.
+- repository — persistência (in-memory, JPA, ou adaptadores).
+- config — configuração de beans, segurança e profiles.
+- src/main/resources — application.yml e profiles (dev, prod); veja variáveis configuráveis.
+- src/test — testes unitários e de integração; execute para ver cobertura básica.
+
+Ler o código passo a passo
+- Ponto de entrada
+- Abra a classe Application. Veja como o Spring inicializa e quais profiles são ativados por padrão.
+- Controllers
+- Localize PixTransactionController (ou nome similar). Para cada método:
+- Identifique a rota (@RequestMapping, @GetMapping, @PostMapping).
+- Observe os DTOs de entrada e saída.
+- Anote validações (@Valid, @NotNull) e códigos de resposta.
+- Services
+- Abra o serviço que o controller chama. Siga a cadeia de chamadas:
+- Validação de negócio
+- Geração de transactionId
+- Persistência em memória ou banco
+- Emissão de eventos (logs, métricas)
+- Modelos e DTOs
+- Verifique campos obrigatórios, tipos (BigDecimal para valores monetários), e formatos de data (ISO8601).
+- Configuração do simulador
+- Veja como SIMULATOR_MODE, latencyMs e errorRate são aplicados. Entenda onde a latência é injetada e como falhas são simuladas.
+- Idempotência
+- Procure por tratamento de Idempotency-Key: onde a chave é lida, armazenada e consultada antes de criar transação.
+- Observabilidade
+- Verifique application.yml e classes de configuração para Actuator, logs estruturados e métricas.
+
+
+
  Compile e execute com Maven
 ```bash
 mvn clean install
@@ -88,85 +126,22 @@ Após conectar, você poderá visualizar a tabela pix_transaction.
 📌 Exemplos de uso (JSON)
 🔹 Autorizar transação
 
-Request
-```bash
-{
-  "key": "teste@pix.com",
-  "amount": 100.0,
-  "description": "Pagamento de teste"
-}
-```
-Response
 
 ```bash
-{
-  "id": 1,
-  "key": "teste@pix.com",
-  "amount": 100.0,
-  "description": "Pagamento de teste",
-  "status": "AUTHORIZED"
-}
-```
+Endpoints Disponíveis:
 
-🔹 Listar transações
-
-```bash
-[
-  {
-    "id": 1,
-    "key": "teste@pix.com",
-    "amount": 100.0,
-    "description": "Pagamento de teste",
-    "status": "AUTHORIZED"
-  },
-  {
-    "id": 2,
-    "key": "cliente@pix.com",
-    "amount": 50.0,
-    "description": "Compra de produto",
-    "status": "REFUNDED"
-  }
-]
-```
-🔹 Consultar transação
-
-```bash
-{
-  "id": 1,
-  "key": "teste@pix.com",
-  "amount": 100.0,
-  "description": "Pagamento de teste",
-  "status": "AUTHORIZED"
-}
-```
-🔹 Estornar transação
-
-```bash
-{
-  "transactionId": "1"
-}
-```
-Response
-
-```bash
-{
-  "id": 1,
-  "key": "teste@pix.com",
-  "amount": 100.0,
-  "description": "Pagamento de teste",
-  "status": "REFUNDED"
-}
-```
-🔹 Validar chave Pix
-
-```bash
-{
-  "key": "teste@pix.com",
-  "valid": true
-}
+ POST   /api/pix/transactions                        -- Criar nova transação PIX; suporte a Idempotency-Key.
+ GET    /api/pix/transactions                        -- Listar transações com filtros e paginação.
+ GET    /api/pix/transactions/{transactionId}        -- Recuperar detalhes e histórico de uma transação.
+ PATCH  /api/pix/transactions/{transactionId}/status -- Atualizar/forçar status da transação (parcial).
+ PUT    /api/pix/simulator/config                    -- Definir configuração global do simulador (idempotente).
+ GET    /actuator/health                             -- Health check do serviço.
+ GET    /v3/api-docs                                 -- OpenAPI JSON.
+ GET    /swagger-ui.html                             -- Interface Swagger UI.
 
 
 ```
+
 📚 Documentação com Swagger / OpenAPI
 
     O projeto inclui documentação automática da API usando Swagger UI.
