@@ -1,0 +1,51 @@
+🛣️ Roadmap de Estudos em Java – Generics e Além
+📌 Etapas já concluídas ✅
+- Exceções personalizadas
+- Classes separadas
+- Classe única com internas
+- Enum + exceção genérica
+✅ Projeto pronto com README comparativo
+- Generics – Introdução
+- Classes genéricas (Caixa<T>, Par<K,V>)
+- Métodos genéricos (Util.imprimirArray<T>)
+✅ Projeto pronto com README didático
+- Generics aplicados em coleções
+- Repositorio<T> genérico
+- RepositorioContas especializado
+- Operações com ContaBancaria
+✅ Projeto robusto com README
+- Bounded Generics (<T extends Number>)
+- NumeroCaixa<T extends Number>
+- Exemplo prático aceitando apenas números
+✅ Projeto pronto com README
+- Wildcards (?)
+- List<?> → curinga universal
+- List<? extends ContaBancaria> → limite superior
+- List<? super ContaBancaria> → limite inferior
+- Sistema bancário com relatórios e transferências
+✅ Projeto pronto com README
+- Múltiplos limites (<T extends Classe & Interface>)
+- Exemplo com ClienteVIP extends ContaBancaria & Comparable
+- Relatório que encontra maior saldo
+✅ Projeto pronto com README
+
+📌 Próximas etapas ➡️
+- Generics com múltiplos limites avançados
+- Combinar mais de uma interface (ex: Comparable & Serializable)
+- Aplicar em relatórios mais complexos
+- Generics em interfaces e hierarquias
+- Criar interfaces genéricas
+- Implementar hierarquias com tipos parametrizados
+- Generics + Coleções avançadas
+- Uso com Map<K,V> e Set<T>
+- Repositórios mais sofisticados (ex: banco com mapa de contas por CPF)
+- Exportação de relatórios
+- Gerar relatórios em diferentes formatos (CSV, PDF)
+- Aplicar boas práticas de design de software
+- Projeto final de Generics
+- Sistema bancário completo com:
+- Cadastro de clientes
+- Contas correntes e poupança
+- Transferências, depósitos e saques
+- Relatórios avançados usando Generics
+- Estrutura modular e reutilizável
