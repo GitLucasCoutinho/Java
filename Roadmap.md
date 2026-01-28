@@ -7,8 +7,8 @@ Use como **checklist**: marque ✅ conforme concluir cada projeto.
 
 ## 📂 Categoria 1 – Fundamentos do Java
 - [X] Fundamentos → tipos primitivos, laços (`for`, `while`), operadores, controle de fluxo  
-- [ ] Tratamento de Exceções → `try/catch/finally`, exceções personalizadas  
-- [ ] Generics → classes e métodos genéricos  
+- [X] Tratamento de Exceções → `try/catch/finally`, exceções personalizadas  
+- [X] Generics → classes e métodos genéricos  
 - [ ] Enums → tipos enumerados  
 - [ ] Anotações (Annotations) → metadados aplicados em classes e métodos  
 
@@ -20,8 +20,8 @@ Use como **checklist**: marque ✅ conforme concluir cada projeto.
 - [X] hashsetComparatorInterator → uso de `HashSet` com comparadores e iteradores  
 - [X] Map → conceitos de `Map` (chave → valor)  
 - [X] Interfaces e Arrays → arrays e interfaces relacionadas a coleções  
-- [ ] LinkedList → lista encadeada  
-- [ ] TreeSet / TreeMap → estruturas ordenadas  
+- [X] LinkedList → lista encadeada  
+- [X] TreeSet / TreeMap → estruturas ordenadas  
 - [ ] PriorityQueue → fila com prioridade  
 - [ ] Deque / Stack → pilha e fila dupla  
 
@@ -41,7 +41,7 @@ Use como **checklist**: marque ✅ conforme concluir cada projeto.
 
 ## 📂 Categoria 4 – Programação Orientada a Objetos (POO)
 - [ ] Herança e Polimorfismo → exemplos práticos  
-- [ ] Interfaces Funcionais → `Predicate`, `Function`, `Consumer`  
+- [X] Interfaces Funcionais → `Predicate`, `Function`, `Consumer`  
 - [ ] Lambdas → expressões funcionais  
 - [ ] Encapsulamento e Abstração → boas práticas de design  
 
@@ -70,5 +70,5 @@ Use como **checklist**: marque ✅ conforme concluir cada projeto.
 - [ ] Segurança → autenticação, autorização, criptografia  
 - [ ] Logging → SLF4J, Logback  
 - [ ] Build Tools → Maven, Gradle  
-- [ ] Docker + Java → empacotando aplicações  
+- [X] Docker + Java → empacotando aplicações  
 - [ ] Integração com Cloud → exemplos simples com AWS ou Azure  
