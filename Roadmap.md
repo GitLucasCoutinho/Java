@@ -9,7 +9,7 @@ Use como **checklist**: marque ✅ conforme concluir cada projeto.
 - [X] Fundamentos → tipos primitivos, laços (`for`, `while`), operadores, controle de fluxo  
 - [X] Tratamento de Exceções → `try/catch/finally`, exceções personalizadas  
 - [X] Generics → classes e métodos genéricos  
-- [ ] Enums → tipos enumerados  
+- [X] Enums → tipos enumerados  
 - [ ] Anotações (Annotations) → metadados aplicados em classes e métodos  
 
 ---
