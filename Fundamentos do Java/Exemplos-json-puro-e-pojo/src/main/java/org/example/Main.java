@@ -16,6 +16,7 @@ public class Main {
         exemploPOJO();
         //classes simples, independentes, sem dependência de frameworks, os desenvolvedores começaram a chamar essas classes de POJOs.
 
+        
     }
 
     // -------------------------------
