@@ -9,10 +9,13 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        // Chamamos cada exemplo separadamente
         exemploManual();
-        exemploGson();
-        exemploJackson();
+        exemploGsonMap();
+        exemploJacksonMap();
+        //POJO é a sigla para Plain Old Java Object, Objeto Java Simples.
+        exemploPOJO();
+        //classes simples, independentes, sem dependência de frameworks, os desenvolvedores começaram a chamar essas classes de POJOs.
+
     }
 
     // -------------------------------
@@ -21,102 +24,81 @@ public class Main {
     public static void exemploManual() {
         System.out.println("=== Exemplo Manual ===");
 
-        // JSON em formato de String
         String value = "{\"name\":\"João\",\"age\":18}";
-
-        // Criamos um HashMap para guardar os pares chave → valor
         Map<String, String> map = new HashMap<>();
 
-        // -------------------------------
-        // PEGANDO O VALOR DA CHAVE "name"
-        // -------------------------------
-
-        // Encontramos a posição inicial da chave "name"
+        // Pegando valor da chave "name"
         int nameStart = value.indexOf("\"name\"");
-
-        // Procuramos a aspas que abre o valor "João"
-        // +6 para pular os caracteres da chave "name"
-        // +1 para começar dentro do valor (ignorar a aspas)
         int nameValueStart = value.indexOf("\"", nameStart + 6) + 1;
-
-        // Procuramos a aspas que fecha o valor
         int nameValueEnd = value.indexOf("\"", nameValueStart);
-
-        // Extraímos o valor usando substring
         String nameValue = value.substring(nameValueStart, nameValueEnd);
-
-        // Guardamos no mapa: chave "name" → valor "João"
         map.put("name", nameValue);
 
-        // -------------------------------
-        // PEGANDO O VALOR DA CHAVE "age"
-        // -------------------------------
-
-        // Encontramos a posição inicial da chave "age"
+        // Pegando valor da chave "age"
         int ageStart = value.indexOf("\"age\"");
-
-        // O valor está depois dos dois pontos (:)
         int ageValueStart = value.indexOf(":", ageStart) + 1;
-
-        // O valor termina antes da chave de fechamento "}"
         int ageValueEnd = value.indexOf("}", ageValueStart);
-
-        // Extraímos o valor e removemos espaços extras
         String ageValue = value.substring(ageValueStart, ageValueEnd).trim();
-
-        // Guardamos no mapa: chave "age" → valor "18"
         map.put("age", ageValue);
 
-        // Mostramos o resultado
         System.out.println(map);
         System.out.println();
     }
 
     // -------------------------------
-    // Exemplo 2: Usando Gson
+    // Exemplo 2: Usando Gson com Map
     // -------------------------------
-    public static void exemploGson() {
-        System.out.println("=== Exemplo com Gson ===");
+    public static void exemploGsonMap() {
+        System.out.println("=== Exemplo Gson com Map ===");
 
-        // JSON em formato de String
         String json = "{\"name\":\"João\",\"age\":18}";
-
-        // Criamos um objeto Gson
         Gson gson = new Gson();
 
-        // Convertendo JSON diretamente para um Map
         Map<String, Object> map = gson.fromJson(json, Map.class);
 
-        // Mostramos o resultado
         System.out.println(map);
-
-        // Acessamos valores pelo nome da chave
         System.out.println("Nome: " + map.get("name"));
         System.out.println("Idade: " + map.get("age"));
         System.out.println();
     }
 
     // -------------------------------
-    // Exemplo 3: Usando Jackson
+    // Exemplo 3: Usando Jackson com Map
     // -------------------------------
-    public static void exemploJackson() throws Exception {
-        System.out.println("=== Exemplo com Jackson ===");
+    public static void exemploJacksonMap() throws Exception {
+        System.out.println("=== Exemplo Jackson com Map ===");
 
-        // JSON em formato de String
         String json = "{\"name\":\"João\",\"age\":18}";
-
-        // Criamos um ObjectMapper (classe principal do Jackson)
         ObjectMapper mapper = new ObjectMapper();
 
-        // Convertendo JSON diretamente para um Map
         Map<String, Object> map = mapper.readValue(json, Map.class);
 
-        // Mostramos o resultado
         System.out.println(map);
-
-        // Acessamos valores pelo nome da chave
         System.out.println("Nome: " + map.get("name"));
         System.out.println("Idade: " + map.get("age"));
+        System.out.println();
+    }
+
+    // -------------------------------
+    // Exemplo 4: Usando Gson/Jackson com POJO
+    // -------------------------------
+    public static void exemploPOJO() throws Exception {
+        System.out.println("=== Exemplo com POJO (Pessoa) ===");
+
+        String json = "{\"name\":\"João\",\"age\":18}";
+
+        // Usando Gson
+        Gson gson = new Gson();
+        Pessoa pessoaGson = gson.fromJson(json, Pessoa.class);
+        System.out.println("Com Gson: " + pessoaGson);
+
+        // Usando Jackson
+        ObjectMapper mapper = new ObjectMapper();
+        Pessoa pessoaJackson = mapper.readValue(json, Pessoa.class);
+        System.out.println("Com Jackson: " + pessoaJackson);
+
+        System.out.println("Nome (Jackson): " + pessoaJackson.getName());
+        System.out.println("Idade (Jackson): " + pessoaJackson.getAge());
         System.out.println();
     }
 }
