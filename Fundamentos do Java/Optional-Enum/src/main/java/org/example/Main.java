@@ -104,14 +104,14 @@ public class Main {
     private static UserV2 getUserV2(User user) {
         return new UserV2(user.name(), user.age(), user.sex());
     }
-
+/**
     // ============================================================
     // MÉTODO QUE CRIA UM USUÁRIO PADRÃO
     // ============================================================
     // Este método é usado em orElse e orElseGet.
     // A diferença é:
     // - Em orElse: ele é chamado SEMPRE, mesmo que não seja necessário.
-    // - Em orElseGet: ele só é chamado SE o Optional estiver vazio.
+    // - Em orElseGet: ele só é chamado SE o Optional estiver vazio.*/
     public static User defaultUser() {
         System.out.println("Chamando defaultUser..."); // ajuda a visualizar quando é chamado
         return new User("Maria", 22, SexEnum.FEMALE);
