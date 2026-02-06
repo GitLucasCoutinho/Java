@@ -10,6 +10,18 @@ public class Main {
 
     public static void main(String[] args) {
 
+
+// Cria um Optional do tipo User, que pode ou não conter um valor.
+// Aqui usamos ofNullable para permitir que o objeto seja nulo sem causar erro.
+Optional<User> optionals = Optional.ofNullable(
+    new User(name: "João", age: 18, MALE) // Instância de User com nome, idade e gênero
+);
+
+// Imprime o conteúdo do Optional no console.
+// Se o objeto existir, será mostrado como Optional[User]; caso contrário, Optional.empty.
+System.out.println(optionals);
+
+
         // ============================================================
         // 0) CRIAÇÃO DE OPTIONALS
         // ============================================================
