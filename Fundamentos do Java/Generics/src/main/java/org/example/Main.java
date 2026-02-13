@@ -29,7 +29,7 @@ public class Main {
         System.out.println("Find by ID=2: " + userDAO.find(d -> d.getId().equals(2)));
         System.out.println("Deleted: " + userDAO.delete(user));
         System.out.println("Final Users: " + userDAO.findAll());
-        System.out.println("======================================\n");
+        System.out.println("=======================================\n");
 
         System.out.println("\n================ CLIENT ================");
         System.out.println("Count: " + clientDAO.count());
