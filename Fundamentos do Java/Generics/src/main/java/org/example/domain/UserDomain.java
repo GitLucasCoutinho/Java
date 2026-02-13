@@ -36,6 +36,8 @@ public class UserDomain extends GenericDomain<Integer>{
     @Override
     public String toString() {
         return "UserDomain{" +
+                "ID=" + getId() +
+                 ", " +
                 "name='" + name + '\'' +
                 ", idade=" + idade +
                 '}';

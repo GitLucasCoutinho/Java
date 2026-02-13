@@ -2,8 +2,8 @@ package org.example.dao;
 
 import org.example.domain.GenericDomain;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -15,8 +15,10 @@ import java.util.function.Predicate;
  *
  * @param <T> Tipo genérico que representa a entidade que será manipulada.
  */
-public abstract class GenericDAO<T> {
+public class GenericDAO<ID, T extends GenericDomain<ID>> {
 
+    public GenericDAO() {
+    }
 
     private final List<T> db = new ArrayList<>();
 
@@ -26,20 +28,36 @@ public abstract class GenericDAO<T> {
      * @param domain objeto da entidade que será salvo.
      * @return o próprio objeto salvo, permitindo encadeamento ou confirmação.
      */
-    public T update(T domain) {
+    public T update(ID id, T domain) {
 
-        var stored = db.stream().filter(d -> d.equals(domain))
+        var stored = find(d -> d.getId().equals(id)).orElseThrow();
+        db.remove(stored);
+
+        return save(domain);
+    }
+
+    /* //Aqui o update faz a bussca direto no metodo, isso nao e uma boa pratica. o melhor seria utilizar o metodo find assim o codigo fica mais limpo e reutilizavel, alem de evitar a repeticao de codigo. como no feito acima nao comentado
+        public T update(ID id, T domain) {
+
+        var stored = db.stream().filter(d -> d.getId().equals(id))
                 .findFirst().orElseThrow();
 
         db.remove(stored);
 
         return save(domain);
     }
+    * */
 
     public T save(T domain) {
         // Adiciona o objeto recebido à lista (simulando persistência).
         db.add(domain);
         return domain;
+    }
+
+
+    public boolean save(int  batch, T... domains) {
+        System.out.println("Salvanso em lotes (%s) \n "+ batch + " registros salvos com sucesso!");
+        return db.addAll(Arrays.stream(domains).toList());
     }
 
     public boolean delete(T domain) {
@@ -63,4 +81,7 @@ public abstract class GenericDAO<T> {
         return db.size();
     }
 
+    public Optional<T> find(Predicate<T> filterCallback) {
+        return db.stream().filter(filterCallback).findFirst();
+    }
 }
