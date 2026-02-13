@@ -55,15 +55,16 @@ public class Main {
         // ============================================================
         System.out.println("\n=== BLOCO 3 - API MODERNA ===");
 
+        LocalDateTime agora = LocalDateTime.now();
+
         // Exemplo 1: manipulando datas com minusDays()
-        LocalDateTime data1 = LocalDateTime.now().minusDays(11);
+        LocalDateTime data1 = agora.minusDays(11);
         System.out.println("Data calculada: " + data1);
 
-        // Exemplo 2: formatando a data atual
-        LocalDateTime data2 = LocalDateTime.now();
+        // Exemplo 2: formatando a data atual com padrão customizado
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss");
-        System.out.println("Data atual: " + data2);
-        System.out.println("Formatado: " + data2.format(formato));
+        System.out.println("Data atual: " + agora);
+        System.out.println("Formatado: " + agora.format(formato));
 
         // Exemplo 3: comparando datas com isAfter() e isBefore()
         LocalDateTime base = LocalDateTime.now();
@@ -92,18 +93,23 @@ public class Main {
         System.out.println("Daqui 2 semanas: " + hoje.plusWeeks(2));
         System.out.println("Mês passado: " + hoje.minusMonths(1));
 
-        // Exemplo 8: comparando com isEqual()
+        // Exemplo 8: comparando com isEqual() e equals()
         LocalDate dataA = LocalDate.of(2026, 2, 13);
         LocalDate dataB = LocalDate.of(2026, 2, 13);
-        System.out.println("dataA.isEqual(dataB)? " + dataA.isEqual(dataB)); // true
+        System.out.println("dataA.isEqual(dataB)? " + dataA.isEqual(dataB));
+        System.out.println("dataA.equals(dataB)? " + dataA.equals(dataB));
 
-        // Exemplo 9: comparando com equals()
-        System.out.println("dataA.equals(dataB)? " + dataA.equals(dataB)); // true
-
-        // Exemplo 10: mostrando diferença prática com LocalDateTime
+        // Exemplo 9: mostrando diferença prática com LocalDateTime
         LocalDateTime dt1 = LocalDateTime.of(2026, 2, 13, 10, 0);
         LocalDateTime dt2 = LocalDateTime.of(2026, 2, 13, 10, 0);
-        System.out.println("dt1.isEqual(dt2)? " + dt1.isEqual(dt2)); // true
-        System.out.println("dt1.equals(dt2)? " + dt1.equals(dt2));   // true
+        System.out.println("dt1.isEqual(dt2)? " + dt1.isEqual(dt2));
+        System.out.println("dt1.equals(dt2)? " + dt1.equals(dt2));
+
+        // Exemplo 10: usando formatadores ISO
+        System.out.println("BASIC_ISO_DATE: " + agora.format(DateTimeFormatter.BASIC_ISO_DATE));
+        System.out.println("ISO_DATE: " + agora.format(DateTimeFormatter.ISO_DATE));
+        System.out.println("ISO_DATE_TIME: " + agora.format(DateTimeFormatter.ISO_DATE_TIME));
+        System.out.println("ISO_LOCAL_DATE: " + agora.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        System.out.println("ISO_LOCAL_DATE_TIME: " + agora.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 }
