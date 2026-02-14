@@ -4,8 +4,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import java.time.Duration;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -149,5 +151,26 @@ public class Main {
         System.out.println("ISO_DATE_TIME: " + agora.format(DateTimeFormatter.ISO_DATE_TIME));
         System.out.println("ISO_LOCAL_DATE: " + agora.format(DateTimeFormatter.ISO_LOCAL_DATE));
         System.out.println("ISO_LOCAL_DATE_TIME: " + agora.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+        // Exemplo 11: OffsetDateTime (data com offset em relação ao UTC)
+        // OffsetDateTime representa um instante com um deslocamento fixo em relação ao UTC (ex: -03:00).
+        // Útil quando você precisa do offset (deslocamento) sem necessariamente usar um ZoneId completo.
+
+       //OffsetDateTime inclui informações sobre time zones, enquanto LocalDateTime não possui essa funcionalidade
+        OffsetDateTime offsetAgora = OffsetDateTime.now();
+        System.out.println("OffsetDateTime agora: " + offsetAgora);
+
+        // Dois OffsetDateTime que representam o mesmo instante, mas com offsets diferentes
+        OffsetDateTime odt1 = OffsetDateTime.of(2026, 2, 13, 10, 0, 0, 0, ZoneOffset.ofHours(-3));
+        OffsetDateTime odt2 = OffsetDateTime.of(2026, 2, 13, 13, 0, 0, 0, ZoneOffset.UTC);
+        System.out.println("odt1 (-03:00): " + odt1);
+        System.out.println("odt2 (UTC):    " + odt2);
+        // toInstant() normaliza para Instant (momento absoluto) — útil para comparar instantes exatos
+        System.out.println("odt1.toInstant().equals(odt2.toInstant())? " + odt1.toInstant().equals(odt2.toInstant()));
+        // equals compara tanto o instante quanto o offset; por isso odt1.equals(odt2) costuma ser false
+        System.out.println("odt1.equals(odt2)? " + odt1.equals(odt2));
+
+        // Formatador ISO que inclui o offset
+        System.out.println("ISO_OFFSET_DATE_TIME: " + offsetAgora.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
 }
