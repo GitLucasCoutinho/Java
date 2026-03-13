@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: ocooldev-security
+  security:
+    user:
+      name: user
+      password: user123
+      roles: USERS
