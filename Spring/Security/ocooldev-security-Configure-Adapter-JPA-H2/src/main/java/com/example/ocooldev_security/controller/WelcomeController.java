@@ -1,4 +1,4 @@
-package com.example.ocooldev_security;
+package com.example.ocooldev_security.controller;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +15,8 @@ public class WelcomeController {
     }
 
     @GetMapping("/users")
-    @PreAuthorize("hasAnyRole('managers','users')")
-    // Só permite acesso se o usuário tiver o papel "managers" OU "users".
+    @PreAuthorize("hasAnyRole('USERS','MANAGERS')")
+    // Só permite acesso se o usuário tiver o papel "USERS" OU "MANAGERS".
     public String users() {
         return "Authorized user";
         // Se autorizado, retorna essa mensagem.
@@ -24,11 +24,10 @@ public class WelcomeController {
 
     @GetMapping("/managers")
     // Define um endpoint GET em "/managers".
-    @PreAuthorize("hasRole('managers')")
-    // Só permite acesso se o usuário tiver o papel "managers".
+    @PreAuthorize("hasRole('MANAGERS')")
+    // Só permite acesso se o usuário tiver o papel "MANAGERS".
     public String managers() {
         return "Authorized manager";
         // Se autorizado, retorna essa mensagem.
     }
 }
-
