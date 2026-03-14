@@ -34,7 +34,7 @@ public class WebSecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, SecurityConfig securityConfig) throws Exception {
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
             .cors(cors -> cors.disable())
             .csrf(csrf -> csrf.disable())
@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/managers").hasAnyRole("MANAGERS")
                 .anyRequest().authenticated()
             )
-            .addFilterAfter(new JWTFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterAfter(new JWTFilter(securityConfig), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

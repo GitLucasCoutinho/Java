@@ -1,8 +1,8 @@
 package com.example.ocooldev.jwt.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +20,12 @@ import java.util.stream.Collectors;
 
 public class JWTFilter extends OncePerRequestFilter {
 
+    private final SecurityConfig securityConfig;
+
+    public JWTFilter(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -34,8 +40,8 @@ public class JWTFilter extends OncePerRequestFilter {
                 // Valida e extrai dados do token
                 JWTObject tokenObject = JWTCreator.create(
                         token,
-                        SecurityConfig.PREFIX,
-                        SecurityConfig.KEY
+                        securityConfig.getPrefix(),
+                        securityConfig.getKey()
                 );
 
                 // Converte roles em authorities do Spring Security
@@ -56,8 +62,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (ExpiredJwtException | UnsupportedJwtException |
-                 MalformedJwtException | SignatureException e) {
+        } catch (JwtException e) {
             e.printStackTrace();
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return;
@@ -67,7 +72,14 @@ public class JWTFilter extends OncePerRequestFilter {
     // Converte roles em authorities do Spring
     private List<SimpleGrantedAuthority> authorities(List<String> roles) {
         return roles.stream()
+                .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.equals("/login") || (path.equals("/users") && request.getMethod().equals("POST")) || path.startsWith("/h2-console");
     }
 }

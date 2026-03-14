@@ -3,6 +3,7 @@ package com.example.ocooldev.jwt.model;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "tab_user")
+@Entity
 public class User {
 
     @Id
@@ -35,9 +37,10 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     // Define a tabela auxiliar "tab_user_roles" para armazenar os papéis
     @CollectionTable(name = "tab_user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    // Nome da coluna que guarda o papel (role)
-    @Column(name = "role_id")
     private List<String> roles = new ArrayList<>();
+
+    public User() {
+    }
 
     // getters e setters
 
