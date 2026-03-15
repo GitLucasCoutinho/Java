@@ -62,6 +62,7 @@ Content-Type: application/json
 }
 ```
 **Resposta:**
+Para verificar informações do token acesse  https://www.jwt.io/
 ```json
 {
   "login": "badbunny",
