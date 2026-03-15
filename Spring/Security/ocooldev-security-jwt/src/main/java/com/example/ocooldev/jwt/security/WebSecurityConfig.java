@@ -44,11 +44,12 @@ public class WebSecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                .requestMatchers(HttpMethod.GET, "/users").hasAnyRole("USERS", "MANAGERS")
-                .requestMatchers("/managers").hasAnyRole("MANAGERS")
+                .requestMatchers(HttpMethod.GET, "/users").hasAnyRole("USER", "MANAGER")
+                .requestMatchers("/managers").hasAnyRole("MANAGER")
                 .anyRequest().authenticated()
             )
-            .addFilterAfter(new JWTFilter(securityConfig), UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterAfter(new JWTFilter(securityConfig), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
