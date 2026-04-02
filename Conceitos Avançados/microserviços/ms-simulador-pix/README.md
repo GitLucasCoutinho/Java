@@ -12,27 +12,10 @@
 
 ---
 
-## 📋 Índice
-
-- [🎯 Sobre](#-sobre)
-- [✨ Funcionalidades](#-funcionalidades)
-- [🚀 Quick Start](#-quick-start)
-- [📊 Arquitetura](#-arquitetura)
-- [📂 Estrutura do Projeto](#-estrutura-do-projeto)
-- [🔌 Endpoints da API](#-endpoints-da-api)
-- [⚙️ Configuração](#️-configuração)
-- [🐳 Docker & Compose](#-docker--compose)
-- [📖 Documentação](#-documentação)
-- [🧪 Testes](#-testes)
-- [🛠️ Tecnologias](#️-tecnologias)
-- [📚 Referências](#-referências)
-- [📜 Licença](#-licença)
-
----
 
 ## 🎯 Sobre
 
-**ms-simulador-pix** é um microserviço **completo e funcional** que simula o sistema de pagamentos **PIX** brasileiro. Perfeito para:
+**ms-simulador-pix** é um microserviço que simula o sistema de pagamentos **PIX** brasileiro. Perfeito para:
 
 ✅ Testar integrações de pagamento em desenvolvimento  
 ✅ Aprender sobre arquitetura de microserviços  
@@ -703,33 +686,7 @@ mvn test -Dtest=PixServiceTest
 
 ---
 
-## 📚 Referências
 
-### Documentação Oficial
-- [Spring Boot Docs](https://spring.io/projects/spring-boot)
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-- [Spring Security](https://spring.io/projects/spring-security)
-- [RabbitMQ Java Client](https://www.rabbitmq.com/java-client.html)
-- [Redis Java Client](https://github.com/redis/jedis)
-
-### PIX & Pagamentos
-- [Manual PIX - Banco Central](https://www.bcb.gov.br/content/dam/Microsites/pix/Oversight/Manual_de_padronizacoes_v06_20201125.pdf)
-- [PIX API - Especificações](https://www.bcb.gov.br/pix)
-- [QR Code Format](https://www.emvco.com/specification/qr-code-specification-for-payment-systems-emv-qrcps/)
-
-### Arquitetura & Padrões
-- [Microservices Architecture](https://microservices.io/)
-- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
-- [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
-- [Saga Pattern](https://microservices.io/patterns/data/saga.html)
-
-### DevOps & Deploy
-- [Docker](https://docs.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-- [Kubernetes](https://kubernetes.io/)
-- [GitHub Actions](https://github.com/features/actions)
-
----
 
 ## 🤝 Contribuindo
 
@@ -816,20 +773,9 @@ Acesse: `http://localhost:8080/h2-console`
 ### 🔄 Em Progresso
 - [ ] API Gateway (Spring Cloud Gateway)
 - [ ] Múltiplos serviços separados
-- [ ] OAuth2/JWT full implementation
-- [ ] mTLS entre serviços
-- [ ] Kubernetes deployment
 
-### 📅 Planejado
-- [ ] Webhooks reais (callback)
-- [ ] Integração com auth real (Keycloak)
-- [ ] Service mesh (Istio)
-- [ ] Saga pattern
-- [ ] API versioning (v1, v2)
 
----
-
-## 📜 Licença
+## Licença
 
 Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](./LICENSE) para detalhes.
 
@@ -845,48 +791,7 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software...
 ```
 
----
+## ⭐ Se este projeto foi útil para você, considere dar uma ⭐ no GitHub!
 
-## 📞 Suporte & Contato
 
-- 📧 Email: [seu-email@example.com](mailto:seu-email@example.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/seu-usuario/ms-simulador-pix/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/seu-usuario/ms-simulador-pix/discussions)
-- 🌐 Website: [seu-website.com](https://seu-website.com)
-
----
-
-## 🙏 Agradecimentos
-
-Agradecimentos especiais a:
-- 💜 Spring Boot & Spring Community
-- 🐰 RabbitMQ Team
-- 🚀 Prometheus & Grafana Communities
-- 📊 Jaeger Tracing Project
-- 🏦 Banco Central do Brasil (PIX)
-
----
-
-## ⭐ Se Gostou, Dê uma Star!
-
-Se este projeto foi útil para você, considere dar uma ⭐ no GitHub!
-
-```bash
-# Clone e comece a usar
-git clone https://github.com/seu-usuario/ms-simulador-pix.git
-cd ms-simulador-pix
-mvn spring-boot:run
-```
-
-**Bom coding! 🚀**
-
----
-
-<div align="center">
-
-**Made with ❤️ para a comunidade Java/Spring Boot**
-
-Desenvolvido em 2026 • [OCoolDev](https://github.com/ocooldev) • Brasil 🇧🇷
-
-</div>
 
