@@ -4,6 +4,7 @@ import com.ocooldev.pix.ms_simulador_pix.domain.model.*;
 import com.ocooldev.pix.ms_simulador_pix.infrastructure.repository.PixTransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -13,19 +14,27 @@ import java.util.UUID;
 public class PixService {
 
     private final PixTransactionRepository repository;
+    private final IdempotencyService idempotencyService;
+    private final QRCodeService qrCodeService;
 
-    public PixService(PixTransactionRepository repository) {
+    public PixService(PixTransactionRepository repository, IdempotencyService idempotencyService, QRCodeService qrCodeService) {
         this.repository = repository;
+        this.idempotencyService = idempotencyService;
+        this.qrCodeService = qrCodeService;
     }
 
     // Autoriza uma nova transação Pix
-    public PixTransaction authorize(String chave, String valorOriginal, String solicitacaoPagador) {
+    public PixTransaction authorize(String chave, String valorOriginal, String solicitacaoPagador, String idempotencyKey) {
+        String txid = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
+        if (idempotencyKey != null && !idempotencyService.isIdempotent(idempotencyKey, txid)) {
+            throw new IllegalArgumentException("Chave de idempotência já utilizada");
+        }
         PixTransaction tx = PixTransaction.builder()
-                .txid(UUID.randomUUID().toString().replace("-", "").substring(0, 32))
+                .txid(txid)
                 .chave(chave)
-                .valor(new Valor(valorOriginal))
+                .valor(new Valor(new BigDecimal(valorOriginal)))
                 .calendario(new Calendario(LocalDateTime.now(), 3600))
-                .status("ATIVA")
+                .status(StatusTransacao.ATIVA)
                 .horario(new Horario(null))
                 .solicitacaoPagador(solicitacaoPagador)
                 .build();
@@ -42,9 +51,19 @@ public class PixService {
 
     public Optional<PixTransaction> refund(String txid) {
         return repository.findById(txid).map(tx -> {
-            tx.setStatus("CONCLUIDA");
+            tx.setStatus(StatusTransacao.CONCLUIDA);
             tx.setHorario(new Horario(LocalDateTime.now()));
             return repository.save(tx);
         });
+    }
+
+    public byte[] generateQRCode(String txid) throws Exception {
+        Optional<PixTransaction> txOpt = repository.findById(txid);
+        if (txOpt.isEmpty()) {
+            throw new IllegalArgumentException("Transação não encontrada");
+        }
+        PixTransaction tx = txOpt.get();
+        String payload = qrCodeService.generatePixPayload(tx.getChave(), tx.getValor().getOriginal(), tx.getTxid(), "Simulador Pix", "São Paulo");
+        return qrCodeService.generateQRCode(payload, 300, 300);
     }
 }

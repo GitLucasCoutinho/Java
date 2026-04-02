@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  pix-simulator:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - h2-db
+
+  h2-db:
+    image: oscarfonts/h2:latest
+    ports:
+      - "1521:1521"
+      - "81:81"
+    environment:
+      - H2_OPTIONS=-webAllowOthers -tcpAllowOthers
+    volumes:
+      - h2-data:/opt/h2-data
+
+volumes:
+  h2-data:

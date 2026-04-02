@@ -21,5 +21,7 @@ public class Parcela {
 
     private String valor; // Valor da parcela em string
 
-    private String status; // PENDENTE, PAGA, VENCIDA
+    @Enumerated(EnumType.STRING)
+    private StatusParcela status; // PENDENTE, PAGA, VENCIDA
 }
+

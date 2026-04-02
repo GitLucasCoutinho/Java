@@ -23,7 +23,8 @@ public class PixTransaction {
     @Embedded
     private Valor valor; // Valor original da transação
 
-    private String status; // Status da cobrança (ATIVA, CONCLUIDA, etc.)
+    @Enumerated(EnumType.STRING)
+    private StatusTransacao status; // Status da cobrança (ATIVA, CONCLUIDA, etc.)
 
     @Embedded
     private com.ocooldev.pix.ms_simulador_pix.domain.model.Horario horario; // Data/hora da liquidação
@@ -33,3 +34,4 @@ public class PixTransaction {
 
     private String solicitacaoPagador; // Mensagem opcional visível ao pagador
 }
+

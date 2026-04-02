@@ -1,6 +1,7 @@
 package com.ocooldev.pix.ms_simulador_pix.domain.service;
 
 import com.ocooldev.pix.ms_simulador_pix.domain.model.Devolucao;
+import com.ocooldev.pix.ms_simulador_pix.domain.model.StatusDevolucao;
 import com.ocooldev.pix.ms_simulador_pix.infrastructure.repository.DevolucaoRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class DevolucaoService {
                 .txid(txid)
                 .valor(valor)
                 .dataHora(LocalDateTime.now())
-                .status("SOLICITADA")
+                .status(StatusDevolucao.SOLICITADA)
                 .build();
         return repository.save(dev);
     }
@@ -30,7 +31,7 @@ public class DevolucaoService {
     // Efetiva devolução
     public Optional<Devolucao> efetivarDevolucao(String id) {
         return repository.findById(id).map(dev -> {
-            dev.setStatus("EFETIVADA");
+            dev.setStatus(StatusDevolucao.EFETIVADA);
             return repository.save(dev);
         });
     }

@@ -21,5 +21,6 @@ public class Devolucao {
 
     private LocalDateTime dataHora; // Momento da devolução
 
-    private String status; // Status da devolução (SOLICITADA, EFETIVADA)
+    @Enumerated(EnumType.STRING)
+    private StatusDevolucao status; // Status da devolução (SOLICITADA, EFETIVADA)
 }

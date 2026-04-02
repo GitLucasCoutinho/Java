@@ -16,10 +16,17 @@ Este projeto fornece uma API simples e open source para testar integrações e f
 - **Banco de dados:** H2 (em memória)
 
 ### Funcionalidades principais
-- Autorização de transações Pix
+- Autorização de transações Pix (com idempotência via Idempotency-Key)
 - Consulta de transações
 - Estorno (refund)
-- Validação de chave Pix
+- Validação de chave Pix (simulada)
+- Cobranças parceladas
+- Devoluções
+- Webhooks simulados
+- Tratamento de erros global
+- Enums para status (StatusTransacao, StatusParcela, StatusDevolucao)
+- Valores monetários em BigDecimal
+- Geração de QR Codes para transações
 
 ---
 
@@ -130,11 +137,11 @@ Após conectar, você poderá visualizar a tabela pix_transaction.
 ```bash
 Endpoints Disponíveis:
 
- POST   /api/pix/transactions                        -- Criar nova transação PIX; suporte a Idempotency-Key.
- GET    /api/pix/transactions                        -- Listar transações com filtros e paginação.
- GET    /api/pix/transactions/{transactionId}        -- Recuperar detalhes e histórico de uma transação.
- PATCH  /api/pix/transactions/{transactionId}/status -- Atualizar/forçar status da transação (parcial).
- PUT    /api/pix/simulator/config                    -- Definir configuração global do simulador (idempotente).
+ POST   /pix/authorize                        -- Criar nova transação PIX; suporte a Idempotency-Key.
+ GET    /pix/transactions                        -- Listar transações.
+ GET    /pix/transaction/{txid}        -- Recuperar detalhes de uma transação.
+ GET    /pix/transaction/{txid}/qrcode        -- Obter QR Code da transação (PNG).
+ POST  /pix/refund/{txid} -- Atualizar status para CONCLUIDA.
  GET    /actuator/health                             -- Health check do serviço.
  GET    /v3/api-docs                                 -- OpenAPI JSON.
  GET    /swagger-ui.html                             -- Interface Swagger UI.
@@ -154,4 +161,3 @@ Endpoints Disponíveis:
 
     Este projeto é open source sob a licença MIT.
 Sinta-se livre para usar, modificar e contribuir! 🎉
-

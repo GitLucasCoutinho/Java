@@ -23,7 +23,8 @@ public class PixParcelado {
     @Embedded
     private Valor valorTotal; // Valor total da cobrança
 
-    private String status; // Status da cobrança
+    @Enumerated(EnumType.STRING)
+    private StatusTransacao status; // Status da cobrança
 
     private String solicitacaoPagador; // Mensagem opcional
 
