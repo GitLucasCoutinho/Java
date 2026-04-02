@@ -114,6 +114,23 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+## 🐳 Docker & Compose
+
+### Rodar Tudo com Docker Compose
+
+```bash
+# Iniciar stack completo
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f pix-simulator
+
+# Parar tudo
+docker-compose down
+
+# Limpar tudo (volumes, networks)
+docker-compose down -v
+```
 ### Modo 2️⃣: JAR Direto
 
 ```bash
@@ -546,23 +563,6 @@ SERVER_PORT=8080
 
 ---
 
-## 🐳 Docker & Compose
-
-### Rodar Tudo com Docker Compose
-
-```bash
-# Iniciar stack completo
-docker-compose up -d
-
-# Ver logs
-docker-compose logs -f pix-simulator
-
-# Parar tudo
-docker-compose down
-
-# Limpar tudo (volumes, networks)
-docker-compose down -v
-```
 
 ### Stack Incluído
 
