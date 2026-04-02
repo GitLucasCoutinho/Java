@@ -1,0 +1,67 @@
+# API Gateway Configuration for Spring Cloud Gateway
+
+spring:
+  application:
+    name: ms-api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        # Rota para Pix Transaction Service
+        - id: pix-transaction
+          uri: lb://ms-pix-transaction
+          predicates:
+            - Path=/pix/**
+          filters:
+            - RewritePath=/(?<segment>.*), /$\{segment}
+            - AddResponseHeader=X-Service,pix-transaction
+            - CircuitBreaker=default
+
+        # Rota para Refund Service
+        - id: pix-refund
+          uri: lb://ms-pix-refund
+          predicates:
+            - Path=/refund/**
+          filters:
+            - RewritePath=/(?<segment>.*), /$\{segment}
+            - AddResponseHeader=X-Service,pix-refund
+            - CircuitBreaker=default
+
+        # Rota para Webhook Service
+        - id: pix-webhook
+          uri: lb://ms-pix-webhook
+          predicates:
+            - Path=/webhook/**
+          filters:
+            - RewritePath=/(?<segment>.*), /$\{segment}
+            - AddResponseHeader=X-Service,webhook
+            - CircuitBreaker=default
+
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              replenish-rate: 100
+              burst-capacity: 200
+              key-resolver: "#{@userKeyResolver}"
+
+server:
+  port: 8000
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+
+# Jaeger Tracing
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+    jaeger:
+      enabled: true
+      endpoint: http://jaeger:14268/api/traces

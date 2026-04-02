@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -90,6 +91,7 @@ public class PixController {
     @ApiResponse(responseCode = "200", description = "Lista de transações recuperada com sucesso",
         content = @Content(mediaType = "application/json", schema = @Schema(implementation = PixTransactionResponse.class)))
     @GetMapping("/transactions")
+    @Cacheable(value = "transactions", unless = "#result.isEmpty()")
     public ResponseEntity<List<PixTransactionResponse>> list() {
         List<PixTransaction> transactions = service.listTransactions();
         return ResponseEntity.ok(transactions.stream().map(this::mapToResponse).toList());

@@ -2,6 +2,7 @@ package com.ocooldev.pix.ms_simulador_pix.domain.service;
 
 import com.ocooldev.pix.ms_simulador_pix.domain.model.PixTransaction;
 import com.ocooldev.pix.ms_simulador_pix.domain.model.StatusTransacao;
+import com.ocooldev.pix.ms_simulador_pix.infrastructure.messaging.PixEventPublisher;
 import com.ocooldev.pix.ms_simulador_pix.infrastructure.repository.PixTransactionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +29,9 @@ class PixServiceTest {
 
     @Mock
     private QRCodeService qrCodeService;
+
+    @Mock
+    private PixEventPublisher eventPublisher;
 
     @InjectMocks
     private PixService service;

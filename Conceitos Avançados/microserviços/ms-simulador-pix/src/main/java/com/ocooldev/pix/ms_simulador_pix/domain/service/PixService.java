@@ -1,7 +1,9 @@
 package com.ocooldev.pix.ms_simulador_pix.domain.service;
 
 import com.ocooldev.pix.ms_simulador_pix.domain.model.*;
+import com.ocooldev.pix.ms_simulador_pix.infrastructure.messaging.PixEventPublisher;
 import com.ocooldev.pix.ms_simulador_pix.infrastructure.repository.PixTransactionRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,14 +18,17 @@ public class PixService {
     private final PixTransactionRepository repository;
     private final IdempotencyService idempotencyService;
     private final QRCodeService qrCodeService;
+    private final PixEventPublisher eventPublisher;
 
-    public PixService(PixTransactionRepository repository, IdempotencyService idempotencyService, QRCodeService qrCodeService) {
+    public PixService(PixTransactionRepository repository, IdempotencyService idempotencyService, QRCodeService qrCodeService, PixEventPublisher eventPublisher) {
         this.repository = repository;
         this.idempotencyService = idempotencyService;
         this.qrCodeService = qrCodeService;
+        this.eventPublisher = eventPublisher;
     }
 
     // Autoriza uma nova transação Pix
+    @CircuitBreaker(name = "pixService", fallbackMethod = "authorizeFallback")
     public PixTransaction authorize(String chave, String valorOriginal, String solicitacaoPagador, String idempotencyKey) {
         String txid = UUID.randomUUID().toString().replace("-", "").substring(0, 32);
         if (idempotencyKey != null && !idempotencyService.isIdempotent(idempotencyKey, txid)) {
@@ -38,7 +43,18 @@ public class PixService {
                 .horario(new Horario(null))
                 .solicitacaoPagador(solicitacaoPagador)
                 .build();
-        return repository.save(tx);
+        PixTransaction saved = repository.save(tx);
+
+        // Publicar evento de transação criada
+        eventPublisher.publishTransactionCreated(txid, chave, valorOriginal);
+
+        return saved;
+    }
+
+    // Fallback method para Circuit Breaker
+    public PixTransaction authorizeFallback(String chave, String valorOriginal, String solicitacaoPagador,
+                                           String idempotencyKey, Exception e) {
+        throw new RuntimeException("Serviço indisponível no momento. Tente novamente mais tarde.", e);
     }
 
     public Optional<PixTransaction> getTransaction(String txid) {
@@ -53,7 +69,12 @@ public class PixService {
         return repository.findById(txid).map(tx -> {
             tx.setStatus(StatusTransacao.CONCLUIDA);
             tx.setHorario(new Horario(LocalDateTime.now()));
-            return repository.save(tx);
+            PixTransaction saved = repository.save(tx);
+
+            // Publicar evento de transação confirmada
+            eventPublisher.publishTransactionConfirmed(txid, tx.getChave(), tx.getValor().getOriginal().toString());
+
+            return saved;
         });
     }
 
